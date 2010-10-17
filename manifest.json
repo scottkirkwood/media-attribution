@@ -1,8 +1,12 @@
 {
-  "name": "Lefty",
-  "version": "0.4",
-  "description": "Move Page Left",
-  "permissions": ["tabs", "http://*/*", "https://*/*"],
+  "name": "Media Attribution",
+  "version": "0.1",
+  "description": "Download an image and make an info file for this file.",
+  "permissions": [
+    "tabs",
+    "contextMenus",
+    "http://*/*", "https://*/*"
+  ],
   "background_page": "background.html",
   "icons": {
     "16": "icon16x16.png",
@@ -14,6 +18,6 @@
   "options_page": "options.html",
   "browser_action": {
     "default_icon": "icon19x19.png",
-    "default_title": "Lefty"
+    "default_title": "Media+Attribution"
   }
 }

@@ -8,5 +8,5 @@ echo "Version is: $ver"
 echo -n "Is this correct? (ctrl-c to abort)"
 read
 
-rm "lefty_$ver.zip"
-zip "lefty_$ver.zip" *.html *.js *.png *.json
+rm "media_attrib_$ver.zip"
+zip "media_attrib_$ver.zip" *.html *.js *.png *.json

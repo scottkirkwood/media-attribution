@@ -13,13 +13,13 @@
 // limitations under the License.
 
 /**
- * @fileoverview Make the center table or div left.
+ * @fileoverview download image and image info.
  * @author scottkirkwood@google.com (Scott Kirkwood)
  */
 
 chrome.extension.onConnect.addListener(
   function(port) {
-    if (port.name != 'lefty') {
+    if (port.name != 'attrib') {
       console.log('Not listening to port named: ' + port.name);
       return;
     }
@@ -32,10 +32,6 @@ chrome.extension.onConnect.addListener(
               cmd: 'getSetting',
               name: msg.name,
               value: obj });
-        } else if (msg.cmd == 'setSetting') {
-          console.log('Save setting for ' + msg.name + ' = ' + msg.value);
-          setSetting(msg.name, msg.value);
-          port.postMessage({});
         } else if (msg.cmd == 'ping') {
           console.log('ping');
           port.postMessage({cmd: 'pong'});
@@ -52,10 +48,10 @@ chrome.extension.onConnect.addListener(
  * Inject these two files in the page.
  * The second will also execute a function.
  */
-function onGoLeft() {
+function onDownloadAttrib() {
   chrome.tabs.executeScript(null, {file: 'jquery-1.4.2.min.js'});
-  chrome.tabs.executeScript(null, {file: 'lefty.js'});
+  chrome.tabs.executeScript(null, {file: 'media_attrib.js'});
 }
 
-chrome.browserAction.onClicked.addListener(onGoLeft);
-
+chrome.contextMenus.create(
+    {"title": "Media+Attribution...", "onclick": onDownloadAttrib});
