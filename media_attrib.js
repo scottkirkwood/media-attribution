@@ -12,49 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-console.log('In media_attrib.js');
+console.log('media_attrib.js');
 
 var port = chrome.extension.connect({name: 'attrib'});
 
-console.log('src: ' + ma_srcUrl);
-console.log('pageUrl: ' + ma_pageUrl);
-console.log('linkUrl: ' + ma_linkUrl);
+var license = undefined;
 
 $('a[href]').each(function(index, elem) {
   var href = $(elem).attr('href');
   if (href.search(/creativecommons.org.licenses/i) != -1) {
     console.log('Found CC: ' + href);
+    license = href;
   }
 });
 
-var mediaUrl;
-if (ma_srcUrl) {
-  mediaUrl = ma_srcUrl;
-} else {
-  mediaUrl = ma_linkUrl;
-}
-
-// Downloadify.create('downloadify',{
-//   filename: function(){
-//     return mediaUrl + '.rdf';
-//   },
-//   data: function() {
-//     return ;
-//   },
-//   onComplete: function() {},
-//   onCancel: function() {},
-//   onError: function() {},
-//   swf: 'downloadify.swf',
-//   downloadImage: 'images/download.png',
-//   width: 100,
-//   height: 30,
-//   transparent: true,
-//   append: false
-// });
-// window.open(mediaUrl);
-
+// Create the new page.
 port.postMessage({
   'cmd': 'createPage',
-  'mediaUrl': mediaUrl,
-  'pageUrl': ma_pageUrl,
+  'license': license
 });

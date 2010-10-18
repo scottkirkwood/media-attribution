@@ -16,14 +16,18 @@
  * @fileoverview download image and image info.
  * @author scottkirkwood@google.com (Scott Kirkwood)
  */
+var ma_mediaType = undefined;
+var ma_srcUrl = undefined;
+var ma_pageUrl = undefined;
+var ma_linkUrl = undefined;
+var ma_license = undefined;
 
 function createPage(msg) {
   console.log('Create page');
+  ma_license = msg['license'];
   chrome.tabs.create({
-      'url': chrome.extension.getURL('metadata.html')},
-      function (newTab) {
-        console.log('Window created');
-      });
+      'url': chrome.extension.getURL('metadata.html')}
+  );
 }
 
 chrome.extension.onConnect.addListener(
@@ -41,11 +45,16 @@ chrome.extension.onConnect.addListener(
               cmd: 'getSetting',
               name: msg.name,
               value: obj });
-        } else if (msg.cmd == 'ping') {
-          console.log('ping');
-          port.postMessage({cmd: 'pong'});
         } else if (msg.cmd == 'createPage') {
           createPage(msg);
+        } else if (msg.cmd == 'getLastInfo') {
+          console.log('getLastInfo');
+          port.postMessage({
+            cmd: 'lastInfo',
+            mediaType: ma_mediaType,
+            srcUrl: ma_srcUrl,
+            linkUrl: ma_linkUrl,
+            license: ma_license});
         } else {
           console.log('Got unknown message: ' + msg.cmd);
           port.postMessage({error: 'unknown message'});
@@ -60,16 +69,12 @@ chrome.extension.onConnect.addListener(
  * The second will also execute a function.
  */
 function onDownloadAttrib(onClickData, tab) {
+  ma_mediaType = onClickData.mediaType;
+  ma_srcUrl = onClickData.srcUrl;
+  ma_pageUrl = onClickData.pageUrl;
+  ma_linkUrl = onClickData.linkUrl;
+  ma_linkUrl = undefined;
   chrome.tabs.executeScript(null, {file: 'jquery-1.4.2.min.js'});
-  chrome.tabs.executeScript(null, {file: 'downloadify.min.js'});
-  chrome.tabs.executeScript(null, {
-    code: [
-      "var ma_mediaType = \'" + onClickData.mediaType + "\';",
-      "var ma_srcUrl = \'" + onClickData.srcUrl + "\';",
-      "var ma_pageUrl = \'" + onClickData.pageUrl + "\';",
-      "var ma_linkUrl = \'" + onClickData.linkUrl + "\';"
-    ].join('\n')}
-  );
   chrome.tabs.executeScript(null, {file: 'media_attrib.js'});
 }
 

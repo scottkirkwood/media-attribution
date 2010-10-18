@@ -9,4 +9,4 @@ echo -n "Is this correct? (ctrl-c to abort)"
 read
 
 rm "media_attrib_$ver.zip"
-zip "media_attrib_$ver.zip" *.html *.js *.png *.json
+zip "media_attrib_$ver.zip" *.swf *.html *.js *.png *.json
