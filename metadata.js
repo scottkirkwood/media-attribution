@@ -32,10 +32,19 @@ port.onMessage.addListener(function(msg) {
   }
 });
 
+var anchorHtml = function(url) {
+  return '<a href="' + url + '">' + url + '</a>';
+};
+
 var setupPage = function(msg) {
   console.log('Setup page');
-  $('#page_url').val(msg['pageUrl']);
-  $('#media_url').val(msg['mediaUrl']);
+  $('#page_url').html(anchorHtml(msg['pageUrl']));
+  var mediaUrl = msg['srcUrl'];
+  if (!mediaUrl) {
+    mediaUrl = msg['linkUrl'];
+  }
+  $('#media_url').html(anchorHtml(mediaUrl));
+  $('#media_type').text(msg['mediaType']);
   $('#fname').val('fname todo');
   $('#desc').val('desc todo');
 };
@@ -51,7 +60,7 @@ var setupPage = function(msg) {
 //   onCancel: function() {},
 //   onError: function() {},
 //   swf: 'downloadify.swf',
-//   downloadImage: 'images/download.png',
+//   downloadImage: 'download.png',
 //   width: 100,
 //   height: 30,
 //   transparent: true,

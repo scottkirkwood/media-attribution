@@ -22,13 +22,24 @@ var ma_pageUrl = undefined;
 var ma_linkUrl = undefined;
 var ma_license = undefined;
 
-function createPage(msg) {
+var createPage = function(msg) {
   console.log('Create page');
   ma_license = msg['license'];
   chrome.tabs.create({
       'url': chrome.extension.getURL('metadata.html')}
   );
-}
+};
+
+var getLastInfo = function(port) {
+  console.log('getLastInfo');
+  port.postMessage({
+    cmd: 'lastInfo',
+    mediaType: ma_mediaType,
+    pageUrl: ma_pageUrl,
+    srcUrl: ma_srcUrl,
+    linkUrl: ma_linkUrl,
+    license: ma_license});
+};
 
 chrome.extension.onConnect.addListener(
   function(port) {
@@ -48,13 +59,7 @@ chrome.extension.onConnect.addListener(
         } else if (msg.cmd == 'createPage') {
           createPage(msg);
         } else if (msg.cmd == 'getLastInfo') {
-          console.log('getLastInfo');
-          port.postMessage({
-            cmd: 'lastInfo',
-            mediaType: ma_mediaType,
-            srcUrl: ma_srcUrl,
-            linkUrl: ma_linkUrl,
-            license: ma_license});
+          getLastInfo(port);
         } else {
           console.log('Got unknown message: ' + msg.cmd);
           port.postMessage({error: 'unknown message'});

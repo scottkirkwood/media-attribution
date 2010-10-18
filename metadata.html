@@ -21,6 +21,7 @@
 <html>
   <head>
     <title>Media+Attribution</title>
+    <link rel="stylesheet" href="metadata.css" type="text/css"></style>
     <script src='jquery-1.4.2.min.js'></script>
     <script src='downloadify.min.js'></script>
     <script src='metadata.js'></script>
@@ -28,13 +29,19 @@
   <body>
   <fieldset>
     <legend>Attribution:</legend>
-    <div id="page_url"></div>
-    <div id="media_url"></div>
-    <label for="fname">File name:</label>
-    <input id="fname" type="text" name="fname" size="40"><br>
-    <label for="desc">Desc:<label>
-    <input id="desc" type="text" name="desc" size="80"><br>
-    <div id="save_date"></div>
+    <label for="page_url">Page URL:</label>
+    <span id="page_url"></span><br>
+    <label for="media_url">Media URL:</label>
+    <span id="media_url"></span><br>
+    <label for="fname">File name:</label><input id="fname" type="text" name="fname" size="40"/><br>
+    <label for="desc">Desc:</label><input id="desc" type="text" name="desc"/><br>
+    <label for="license">License:</label><input id="license" type="text" name="license"/><br>
+    <label for="author">Author:</label><input
+      id="author" type="text" name="author" size="40"/><br>
+    <label for="media_type">Media type:</label>
+    <span id="media_type"></span><br/>
+    <label for="save_date">Date:</label>
+    <span id="save_date"></span><br>
   </fieldset>
 
   <a id="theimageUrl"></a>

@@ -1,0 +1,25 @@
+
+fieldset {
+  width: 800px;
+}
+
+span {
+  display: block;
+  height: 1.5ex;
+}
+
+label {
+  clear: left;
+  float: left;
+  height: 1ex;
+  width: 150px;
+}
+
+input {
+  clear: right;
+  display: block;
+  width: 500px;
+  line-height: 2ex;
+  margin: 0;
+  padding: 0;
+}
