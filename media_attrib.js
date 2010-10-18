@@ -57,26 +57,33 @@ var isDefined = function(variable, opt_subvariables) {
 };
 
 var getAuthor = function() {
+  var license;
   var author;
   if (isDefined('_user', ['nickname'])) {
     // Name from picasaweb
-    return _user['nickname'];
+    return [license, _user['nickname']];
   }
-  var re_reservedBy = /((?:Some|All) rights reserved by(?:\s\w+)+)/i;
+  var re_reservedBy = /((?:Some|All) rights reserved) by((?:\s\w+)+)/i;
   for (var i = 0; i < document.all.length; i++) {
     var txt = $(document.all[i]).text();
     if (txt && re_reservedBy.test(txt)) {
       var result = re_reservedBy.exec(txt);
-      author = result[0];
+      license = result[1];
+      author = result[2].replace(/^\s+/, '');
       console.log('found: ' + author);
       break; // TODO(scottkirkwood): find the closest to the image
     }
   }
-  return author;
+  console.log('license: ' + license);
+  console.log('author: ' + author);
+  return [license, author];
 };
 
 function endsWith(str, suffix) {
-    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+  if (!str || !suffix) {
+    return false;
+  }
+  return str.indexOf(suffix, str.length - suffix.length) !== -1;
 }
 
 var getAlt = function(srcUrl) {
@@ -107,15 +114,19 @@ var createPage = function(msg) {
 
   var license = getLicense();
 
-  var author = getAuthor();
+  var lic_author = getAuthor();
+  if (!license && lic_author[0]) {
+    license = lic_author[0];
+  }
+  var author = lic_author[1];
 
   // Create the new page.
   port.postMessage({
-    'cmd': 'createPage',
-    'license': license,
-    'author': author,
-    'alt': alt,
-    'date': lastModified
+    "cmd": "createPage",
+    "license": license,
+    "author": author,
+    "alt": alt,
+    "date": lastModified
   });
 };
 

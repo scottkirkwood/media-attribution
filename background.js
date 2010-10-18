@@ -23,14 +23,17 @@ var ma_linkUrl = undefined;
 var ma_license = undefined;
 var ma_alt = undefined;
 var ma_date = undefined;
+var ma_author = undefined;
 
 var createPage = function(msg) {
   console.log('Create page');
   ma_license = msg['license'];
   ma_alt = msg['alt'];
   ma_date = msg['date'];
+  ma_author = msg['author'];
   console.log('License: ' + ma_license);
   console.log('Alt: ' + ma_alt);
+  console.log('Author: ' + ma_author);
   chrome.tabs.create({
       'url': chrome.extension.getURL('metadata.html')}
   );
@@ -46,7 +49,8 @@ var getLastInfo = function(port) {
     linkUrl: ma_linkUrl,
     license: ma_license,
     alt: ma_alt,
-    date: ma_date
+    "date": ma_date,
+    author: ma_author
   });
 };
 

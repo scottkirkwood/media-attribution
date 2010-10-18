@@ -75,6 +75,9 @@ var googlShorten = function(id_from, id_hide, id_to) {
  * Grab the filename from the url.
  */
 var getFileName = function(url) {
+  if (!url) {
+    return url;
+  }
   // Remove the anchor at the end, if there is one
   url = url.substring(0, (url.indexOf("#") == -1) ? url.length : url.indexOf("#"));
   // Removes the query after the file name, if there is one
@@ -96,6 +99,7 @@ var setupPage = function(msg) {
   $('#fname').val(getFileName(mediaUrl));
   $('#desc').val(msg['alt']);
   $('#license').val(msg['license']);
+  $('#author').val(msg['author']);
   $('#date').text(msg['date']);
 };
 
