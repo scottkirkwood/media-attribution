@@ -1,11 +1,19 @@
 
 fieldset {
-  width: 800px;
+  width: 95%;
 }
 
 span {
   display: block;
   height: 1.5ex;
+}
+
+a {
+  display: inline-block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 85%;
 }
 
 label {
@@ -15,10 +23,31 @@ label {
   width: 150px;
 }
 
-input {
+.button {
+  width: auto;
+}
+
+.short-text {
   clear: right;
   display: block;
-  width: 500px;
+  width: 300px;
+  line-height: 2ex;
+  margin: 0;
+  padding: 0;
+}
+
+.long-text {
+  clear: right;
+  display: block;
+  width: 600px;
+  line-height: 2ex;
+  margin: 0;
+  padding: 0;
+}
+.license-text {
+  clear: right;
+  display: block;
+  width: 600px;
   line-height: 2ex;
   margin: 0;
   padding: 0;

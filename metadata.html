@@ -31,17 +31,37 @@
     <legend>Attribution:</legend>
     <label for="page_url">Page URL:</label>
     <span id="page_url"></span><br>
+
+    <label for="page_short_url">Page short url:</label>
+    <input type="button" class="button" id="page_short_url_but"
+      value="get goog.gl URL" onclick="googlShorten('page_url', this.id, 'page_short_url');"/>
+    <span id="page_short_url"></span><br>
+
     <label for="media_url">Media URL:</label>
     <span id="media_url"></span><br>
-    <label for="fname">File name:</label><input id="fname" type="text" name="fname" size="40"/><br>
-    <label for="desc">Desc:</label><input id="desc" type="text" name="desc"/><br>
-    <label for="license">License:</label><input id="license" type="text" name="license"/><br>
-    <label for="author">Author:</label><input
-      id="author" type="text" name="author" size="40"/><br>
+
+    <label for="media_short_url">Media short url:</label>
+    <input type="button" class="button" id="media_short_url_but"
+      value="get goog.gl URL" onclick="googlShorten('media_url', this.id, 'media_short_url');"/>
+    <span id="media_short_url"></span><br>
+
+    <label for="fname">File name:</label>
+    <input id="fname" class="short-text" type="text" name="fname" size="40"/><br>
+
+    <label for="desc">Desc:</label>
+    <input id="desc" class="long-text" type="text" name="desc"/><br>
+
+    <label for="license">License:</label>
+    <input id="license" class="license-text" type="text" name="license"/><br>
+
+    <label for="author">Author:</label>
+    <input id="author" class="short-text" type="text" name="author" size="40"/><br>
+
     <label for="media_type">Media type:</label>
     <span id="media_type"></span><br/>
-    <label for="save_date">Date:</label>
-    <span id="save_date"></span><br>
+
+    <label for="date">Date:</label>
+    <span id="date"></span><br>
   </fieldset>
 
   <a id="theimageUrl"></a>

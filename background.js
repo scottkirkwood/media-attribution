@@ -21,10 +21,16 @@ var ma_srcUrl = undefined;
 var ma_pageUrl = undefined;
 var ma_linkUrl = undefined;
 var ma_license = undefined;
+var ma_alt = undefined;
+var ma_date = undefined;
 
 var createPage = function(msg) {
   console.log('Create page');
   ma_license = msg['license'];
+  ma_alt = msg['alt'];
+  ma_date = msg['date'];
+  console.log('License: ' + ma_license);
+  console.log('Alt: ' + ma_alt);
   chrome.tabs.create({
       'url': chrome.extension.getURL('metadata.html')}
   );
@@ -38,7 +44,10 @@ var getLastInfo = function(port) {
     pageUrl: ma_pageUrl,
     srcUrl: ma_srcUrl,
     linkUrl: ma_linkUrl,
-    license: ma_license});
+    license: ma_license,
+    alt: ma_alt,
+    date: ma_date
+  });
 };
 
 chrome.extension.onConnect.addListener(
@@ -78,7 +87,10 @@ function onDownloadAttrib(onClickData, tab) {
   ma_srcUrl = onClickData.srcUrl;
   ma_pageUrl = onClickData.pageUrl;
   ma_linkUrl = onClickData.linkUrl;
-  ma_linkUrl = undefined;
+  ma_license = undefined;
+  ma_alt = undefined;
+  ma_date = undefined;
+
   chrome.tabs.executeScript(null, {file: 'jquery-1.4.2.min.js'});
   chrome.tabs.executeScript(null, {file: 'media_attrib.js'});
 }
