@@ -17,6 +17,15 @@
  * @author scottkirkwood@google.com (Scott Kirkwood)
  */
 
+function createPage(msg) {
+  console.log('Create page');
+  chrome.tabs.create({
+      'url': chrome.extension.getURL('metadata.html')},
+      function (newTab) {
+        console.log('Window created');
+      });
+}
+
 chrome.extension.onConnect.addListener(
   function(port) {
     if (port.name != 'attrib') {
@@ -35,6 +44,8 @@ chrome.extension.onConnect.addListener(
         } else if (msg.cmd == 'ping') {
           console.log('ping');
           port.postMessage({cmd: 'pong'});
+        } else if (msg.cmd == 'createPage') {
+          createPage(msg);
         } else {
           console.log('Got unknown message: ' + msg.cmd);
           port.postMessage({error: 'unknown message'});
@@ -48,10 +59,22 @@ chrome.extension.onConnect.addListener(
  * Inject these two files in the page.
  * The second will also execute a function.
  */
-function onDownloadAttrib() {
+function onDownloadAttrib(onClickData, tab) {
   chrome.tabs.executeScript(null, {file: 'jquery-1.4.2.min.js'});
+  chrome.tabs.executeScript(null, {file: 'downloadify.min.js'});
+  chrome.tabs.executeScript(null, {
+    code: [
+      "var ma_mediaType = \'" + onClickData.mediaType + "\';",
+      "var ma_srcUrl = \'" + onClickData.srcUrl + "\';",
+      "var ma_pageUrl = \'" + onClickData.pageUrl + "\';",
+      "var ma_linkUrl = \'" + onClickData.linkUrl + "\';"
+    ].join('\n')}
+  );
   chrome.tabs.executeScript(null, {file: 'media_attrib.js'});
 }
 
-chrome.contextMenus.create(
-    {"title": "Media+Attribution...", "onclick": onDownloadAttrib});
+chrome.contextMenus.create({
+  "title": "Media+Attribution...",
+  "contexts": ["link", "image", "video", "audio"],
+  "onclick": onDownloadAttrib
+});
