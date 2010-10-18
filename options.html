@@ -1,0 +1,75 @@
+<!DOCTYPE>
+<html>
+<head>
+  <title>Media Attribution Downloader</title>
+  <style>
+    .new {
+      color: #F33;
+      position:relative; top: -0.2em; left: 0;
+    }
+  </style>
+  <script src="jquery-1.4.2.min.js"></script>
+  <script src="schema.js"></script>
+  <script>
+
+var default_style = 'margin-right: 950px; margin-left: 5px;';
+
+function animateSaved() {
+  // Stop any currently running animations,
+  // make sure it's at 100 opacity (fadeIn(10)),
+  // then fade out slowly.
+  $('#saved').stop(false, true).fadeIn(10).fadeOut(2000);
+}
+
+function saveText(textBox) {
+  if (textBox.name == 'style') {
+    console.log('Getting style');
+    var curValue = getSetting('style', default_style);
+    if (curValue == textBox.value) {
+      return;  // No need to save
+    }
+    console.log('Settings style to: ', textBox.value);
+    setSetting('style', textBox.value);
+  } else {
+    alert('Unknown textBox:' + textBox);
+  }
+  animateSaved();
+  return false;
+}
+
+function main() {
+  if (localStorage == null) {
+    alert('LocalStorage required to save options.');
+    return;
+  }
+  var style = getSetting('style', default_style)
+  if (style) {
+    $('#style').val(style);
+  }
+}
+
+  </script>
+</head>
+<body onload="main()">
+  <div>
+    <img class="logo" src="icon48x48.png" alt="logo">
+    <h2 class="title">Media Attribution...</h2>
+    <p class="subtitle">
+    Download media and create some attribution metadata.
+    </p>
+  </div>
+  <p>
+  <hr width="570px" align="left"/>
+  <b>Options:</b>
+  <p>
+    <label for="style">Style:</label>
+    <input id="style" type="text" name="style" value="" size="80"
+           onblur="saveText(this);">
+    <input id="save" type="button" value="save",
+           onclick="saveText($('#style').get(0));">
+  </p>
+  <p>
+
+  <div id="saved" style="padding-left: 500px;color: #F33;font-weight: bold;display: none">Saved</div>
+</body>
+
