@@ -16,41 +16,52 @@
  * @fileoverview download image and image info.
  * @author scottkirkwood@google.com (Scott Kirkwood)
  */
-var ma_mediaType = undefined;
-var ma_srcUrl = undefined;
-var ma_pageUrl = undefined;
-var ma_linkUrl = undefined;
-var ma_license = undefined;
-var ma_alt = undefined;
-var ma_date = undefined;
-var ma_author = undefined;
+var ma_info = {}
 
 var createPage = function(msg) {
   console.log('Create page');
-  ma_license = msg['license'];
-  ma_alt = msg['alt'];
-  ma_date = msg['date'];
-  ma_author = msg['author'];
-  console.log('License: ' + ma_license);
-  console.log('Alt: ' + ma_alt);
-  console.log('Author: ' + ma_author);
+  saveLastInfo(msg);
   chrome.tabs.create({
       'url': chrome.extension.getURL('metadata.html')}
   );
 };
 
+var saveLastInfo = function(msg) {
+  var keys = [
+    'alt',
+    'author',
+    'date',
+    'fname',
+    'desc',
+    'license',
+    'mediaType',
+    'pageUrl',
+    'srcUrl',
+    'shortSrcUrl',
+    'mediaUrl',
+    'shortMediaUrl',
+  ];
+  for (var i = 0; i < keys.length; i++) {
+    var key = keys[i];
+    if (msg[key]) {
+      ma_info[key] = msg[key];
+      console.log('Save> ' + key + ': ' + msg[key]);
+    }
+  }
+}
+
 var getLastInfo = function(port) {
   console.log('getLastInfo');
   port.postMessage({
     cmd: 'lastInfo',
-    mediaType: ma_mediaType,
-    pageUrl: ma_pageUrl,
-    srcUrl: ma_srcUrl,
-    linkUrl: ma_linkUrl,
-    license: ma_license,
-    alt: ma_alt,
-    "date": ma_date,
-    author: ma_author
+    'alt': ma_info['alt'],
+    'author': ma_info['author'],
+    'date': ma_info['date'],
+    'license': ma_info['license'],
+    'linkUrl': ma_info['linkUrl'],
+    'mediaType': ma_info['mediaType'],
+    'pageUrl': ma_info['pageUrl'],
+    'srcUrl': ma_info['srcUrl'],
   });
 };
 
@@ -71,6 +82,8 @@ chrome.extension.onConnect.addListener(
               value: obj });
         } else if (msg.cmd == 'createPage') {
           createPage(msg);
+        } else if (msg.cmd == 'saveLastInfo') {
+          saveLastInfo(msg);
         } else if (msg.cmd == 'getLastInfo') {
           getLastInfo(port);
         } else {
@@ -87,13 +100,10 @@ chrome.extension.onConnect.addListener(
  * The second will also execute a function.
  */
 function onDownloadAttrib(onClickData, tab) {
-  ma_mediaType = onClickData.mediaType;
-  ma_srcUrl = onClickData.srcUrl;
-  ma_pageUrl = onClickData.pageUrl;
-  ma_linkUrl = onClickData.linkUrl;
-  ma_license = undefined;
-  ma_alt = undefined;
-  ma_date = undefined;
+  ma_info['mediaType'] = onClickData.mediaType;
+  ma_info['srcUrl'] = onClickData.srcUrl;
+  ma_info['pageUrl'] = onClickData.pageUrl;
+  ma_info['linkUrl'] = onClickData.linkUrl;
 
   chrome.tabs.executeScript(null, {file: 'jquery-1.4.2.min.js'});
   chrome.tabs.executeScript(null, {file: 'media_attrib.js'});

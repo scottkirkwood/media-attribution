@@ -90,6 +90,13 @@ var getFileName = function(url) {
 
 var onChange = function() {
   $('#savelinkas').attr('href', saveAsUrl());
+  port.postMessage({
+    'cmd': 'saveLastInfo',
+    'author': $('#author').val(),
+    'desc': $('#desc').val(),
+    'fname': $('#fname').val(),
+    'license': $('#license').val(),
+  });
 };
 
 var setupPage = function(msg) {
@@ -101,8 +108,16 @@ var setupPage = function(msg) {
   }
   $('#media_url').html(anchorHtml(mediaUrl));
   $('#media_type').text(msg['mediaType']);
-  $('#fname').val(getFileName(mediaUrl));
-  $('#desc').val(msg['alt']);
+  if (msg['fname']) {
+    $('#fname').val(msg['fname']);
+  } else {
+    $('#fname').val(getFileName(mediaUrl));
+  }
+  if (msg['desc']) {
+    $('#desc').val(msg['desc']);
+  } else {
+    $('#desc').val(msg['alt']);
+  }
   $('#license').val(msg['license']);
   $('#author').val(msg['author']);
   $('#date').text(msg['date']);
