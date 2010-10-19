@@ -101,28 +101,62 @@ var setupPage = function(msg) {
   $('#license').val(msg['license']);
   $('#author').val(msg['author']);
   $('#date').text(msg['date']);
+  if (msg['srcUrl']) {
+    $('#theImage').attr('src', msg['srcUrl']);
+  }
 };
 
-// Downloadify.create('downloadify',{
-//   filename: function(){
-//     return mediaUrl + '.rdf';
-//   },
-//   data: function() {
-//     return ;
-//   },
-//   onComplete: function() {},
-//   onCancel: function() {},
-//   onError: function() {},
-//   swf: 'downloadify.swf',
-//   downloadImage: 'download.png',
-//   width: 100,
-//   height: 30,
-//   transparent: true,
-//   append: false
-// });
-// window.open(mediaUrl);
+var getAsString = function() {
+  console.log('getAsString');
+  var lst = [];
+  lst.push('pageUrl: ' + $('#page_url').text());
+  var pageUrlShort = $('#page_short_url').find('a');
+  if (page_short_url.length) {
+    lst.push('pageShortUrl: ' + page_short_url.attr('href'));
+  }
+  lst.push('mediaUrl: ' + $('#media_url').text());
+  var mediaUrlShort = $('#media_short_url').find('a');
+  if (media_short_url.length) {
+    lst.push('mediaShortUrl: ' + media_short_url.attr('href'));
+  }
+  lst.push('mediaType: ' + $('#media_type').text());
+  lst.push('fname: ' + $('#fname').val());
+  lst.push('desc: ' + $('#desc').val());
+  lst.push('license: ' + $('#license').val());
+  lst.push('author: ' + $('#author').val());
+  lst.push('date: ' + $('date').text());
+  return lst.join('\n');
+};
 
 $(document).ready(function() {
+  Downloadify.create('downloadify', {
+    filename: function() {
+      console.log('filename');
+      return $('#fname') + '.meta';
+    },
+    data: function() {
+      return getAsString();
+    },
+    onComplete: function() {
+      console.log('Downloaded');
+      $('#loadifyinfo').text('Downloaded.');
+    },
+    onCancel: function() {
+      console.log('Cancelled');
+      $('#loadifyinfo').text('Cancelled.');
+    },
+    onError: function() {
+      console.log('Error');
+      $('#loadifyinfo').text('Error');
+    },
+    swf: 'downloadify.swf',
+    downloadImage: 'download.png',
+    width: 100,
+    height: 30,
+    transparent: true,
+    append: false
+  });
+
   port.postMessage({
     'cmd': 'getLastInfo'
   });
