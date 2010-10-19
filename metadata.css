@@ -1,11 +1,11 @@
 
 fieldset {
   width: 95%;
+  line-height: 1ex;
 }
 
 span {
   display: block;
-  height: 1.5ex;
 }
 
 a {
@@ -19,7 +19,6 @@ a {
 label {
   clear: left;
   float: left;
-  height: 1ex;
   width: 150px;
 }
 
@@ -31,7 +30,7 @@ label {
   clear: right;
   display: block;
   width: 300px;
-  line-height: 2ex;
+  line-height: 1ex;
   margin: 0;
   padding: 0;
 }
@@ -40,15 +39,30 @@ label {
   clear: right;
   display: block;
   width: 600px;
-  line-height: 2ex;
+  line-height: 1ex;
   margin: 0;
   padding: 0;
 }
+
 .license-text {
   clear: right;
   display: block;
   width: 600px;
-  line-height: 2ex;
+  line-height: 1ex;
   margin: 0;
   padding: 0;
 }
+
+#savelinkas {
+  padding: 10px;
+  margin: 10px;
+  background: --webkit-gradient(linear, left top, left bottom,
+                                from(rgba(200, 200, 240, 0.16)),
+                                to(rgba(255, 255, 255, 0.16)));
+  width: auto;
+  border: 1px solid #333;
+  border-radius: 9px;
+  text-shadow: rgba(64, 64, 64, 0.5) 3px 3px 2px;
+  box-shadow: rgba(0, 0, 128, 0.25) 4px 4px 10px;
+};
+

@@ -63,6 +63,7 @@ var googlShorten = function(id_from, id_hide, id_to) {
       console.log('Short url is: ' + shortUrl);
       $('#' + id_hide).hide();
       $('#' + id_to).html(anchorHtml(shortUrl));
+      onChange();
     },
     error: function(req, textStatus, errorThrown) {
       $('#' + id_hide).show();
@@ -87,6 +88,10 @@ var getFileName = function(url) {
   return url;
 };
 
+var onChange = function() {
+  $('#savelinkas').attr('href', saveAsUrl());
+};
+
 var setupPage = function(msg) {
   console.log('Setup page');
   $('#page_url').html(anchorHtml(msg['pageUrl']));
@@ -104,6 +109,7 @@ var setupPage = function(msg) {
   if (msg['srcUrl']) {
     $('#theimage').attr('src', msg['srcUrl']);
   }
+  onChange();
 };
 
 var getAsString = function() {
@@ -124,41 +130,17 @@ var getAsString = function() {
   lst.push('desc: ' + $('#desc').val());
   lst.push('license: ' + $('#license').val());
   lst.push('author: ' + $('#author').val());
-  lst.push('date: ' + $('date').text());
+  lst.push('date: ' + $('#date').text());
   return lst.join('\n');
 };
 
-$(document).ready(function() {
-  console.log('swf: ' + chrome.extension.getURL('downloadify.swf'));
-  Downloadify.create('downloadify', {
-    filename: function() {
-      console.log('filename');
-      return $('#fname') + '.meta';
-    },
-    data: function() {
-      console.log('data');
-      return getAsString();
-    },
-    onComplete: function() {
-      console.log('Downloaded');
-      $('#loadifyinfo').text('Downloaded.');
-    },
-    onCancel: function() {
-      console.log('Cancelled');
-      $('#loadifyinfo').text('Cancelled.');
-    },
-    onError: function() {
-      console.log('Error');
-      $('#loadifyinfo').text('Error');
-    },
-    swf: chrome.extension.getURL('downloadify.swf'),
-    downloadImage: chrome.extension.getURL('download.png'),
-    width: 100,
-    height: 30,
-    transparent: true,
-    append: false
-  });
+var saveAsUrl = function() {
+  var toStr = getAsString();
+  console.log('ToSTr:' + toStr);
+  return "data:text/plain;charset=utf-8;base64," + btoa(getAsString());
+};
 
+$(document).ready(function() {
   port.postMessage({
     'cmd': 'getLastInfo'
   });
