@@ -45,16 +45,16 @@
     <span id="media_short_url"></span><br>
 
     <label for="fname">File name:</label>
-    <input id="fname" class="short-text" type="text" name="fname" size="40"/><br>
+    <input id="fname" onblur="onChange();" class="short-text" type="text" name="fname" size="40"/><br>
 
     <label for="desc">Desc:</label>
-    <input id="desc" class="long-text" type="text" name="desc"/><br>
+    <input id="desc" onblur="onChange();" class="long-text" type="text" name="desc"/><br>
 
     <label for="license">License:</label>
-    <input id="license" class="license-text" type="text" name="license"/><br>
+    <input id="license" onblur="onChange();" class="license-text" type="text" name="license"/><br>
 
     <label for="author">Author:</label>
-    <input id="author" class="short-text" type="text" name="author" size="40"/><br>
+    <input id="author" onblur="onChange();" class="short-text" type="text" name="author" size="40"/><br>
 
     <label for="media_type">Media type:</label>
     <span id="media_type"></span><br/>
@@ -63,6 +63,10 @@
     <span id="date"></span><br>
   </fieldset>
 
+  <p class="info">
+  Right click on the links below (in order) and click "Save Link As..." in both cases.
+  If should also running watch.py on the destination folder.
+  </p>
   <a id="savemediaas" class="savelinkas" href="#">Save Media Link As...</a>
 
   <a id="savelinkas" class="savelinkas" href="#">Save Metadata Text Link As...</a>
