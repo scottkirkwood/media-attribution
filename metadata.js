@@ -102,7 +102,7 @@ var setupPage = function(msg) {
   $('#author').val(msg['author']);
   $('#date').text(msg['date']);
   if (msg['srcUrl']) {
-    $('#theImage').attr('src', msg['srcUrl']);
+    $('#theimage').attr('src', msg['srcUrl']);
   }
 };
 
@@ -129,12 +129,14 @@ var getAsString = function() {
 };
 
 $(document).ready(function() {
+  console.log('swf: ' + chrome.extension.getURL('downloadify.swf'));
   Downloadify.create('downloadify', {
     filename: function() {
       console.log('filename');
       return $('#fname') + '.meta';
     },
     data: function() {
+      console.log('data');
       return getAsString();
     },
     onComplete: function() {
@@ -149,8 +151,8 @@ $(document).ready(function() {
       console.log('Error');
       $('#loadifyinfo').text('Error');
     },
-    swf: 'downloadify.swf',
-    downloadImage: 'download.png',
+    swf: chrome.extension.getURL('downloadify.swf'),
+    downloadImage: chrome.extension.getURL('download.png'),
     width: 100,
     height: 30,
     transparent: true,
