@@ -106,6 +106,7 @@ var setupPage = function(msg) {
   $('#license').val(msg['license']);
   $('#author').val(msg['author']);
   $('#date').text(msg['date']);
+  $('#savemediaas').attr('href', mediaUrl);
   if (msg['srcUrl']) {
     $('#theimage').attr('src', msg['srcUrl']);
   }

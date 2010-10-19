@@ -2,6 +2,7 @@
 fieldset {
   width: 95%;
   line-height: 1ex;
+  padding:20px;
 }
 
 span {
@@ -19,6 +20,7 @@ a {
 label {
   clear: left;
   float: left;
+  padding-top: 2px;
   width: 150px;
 }
 
@@ -53,7 +55,7 @@ label {
   padding: 0;
 }
 
-#savelinkas {
+.savelinkas {
   padding: 10px;
   margin: 10px;
   background: --webkit-gradient(linear, left top, left bottom,
