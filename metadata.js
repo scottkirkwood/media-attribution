@@ -25,7 +25,7 @@ console.log('metadata.js');
 port.onMessage.addListener(function(msg) {
   console.log('metadata port listen');
   if (msg.cmd == 'lastInfo') {
-    setupPage(msg);
+    getLastInfo(msg);
   } else {
     console.log('Got unknown message: ' + msg.cmd);
     port.postMessage({error: 'unknown message'});
@@ -88,18 +88,50 @@ var getFileName = function(url) {
   return url;
 };
 
-var onChange = function() {
-  $('#savelinkas').attr('href', saveAsUrl());
-  port.postMessage({
-    'cmd': 'saveLastInfo',
-    'author': $('#author').val(),
-    'desc': $('#desc').val(),
-    'fname': $('#fname').val(),
-    'license': $('#license').val(),
-  });
+var getVal = function(id) {
+  var elem = $(id);
+  if (!elem.length) {
+    console.log('Error could not find tag: ' + id);
+    return;
+  }
+  if (elem.get(0).tagName == "INPUT") {
+    return elem.val();
+  }
+  var atag = elem.find('a');
+  if (atag.length) {
+    console.log('Href');
+    return atag.attr('href');
+  }
+  if (elem && elem.text()) {
+    return elem.text();
+  }
+  return;
 };
 
-var setupPage = function(msg) {
+
+var maybeSet = function(obj, key, val) {
+  if (val) {
+    obj[key] = val;
+  }
+};
+
+var onChange = function() {
+  $('#savelinkas').attr('href', saveAsUrl());
+  cmd = {'cmd': 'saveLastInfo'}
+  maybeSet(cmd, 'author', getVal('#author'));
+  maybeSet(cmd, 'desc', getVal('#desc'));
+  maybeSet(cmd, 'fname', getVal('#fname'));
+  maybeSet(cmd, 'license', getVal('#license'));
+  maybeSet(cmd, 'mediaType', getVal('#media_type'));
+  maybeSet(cmd, 'date', getVal('#date'));
+  maybeSet(cmd, 'mediaUrl', getVal('#media_url'));
+  maybeSet(cmd, 'pageUrl', getVal('#page_url'));
+  maybeSet(cmd, 'mediaShortUrl', getVal('#media_short_url'));
+  maybeSet(cmd, 'pageShortUrl', getVal('#page_short_url'));
+  port.postMessage(cmd);
+};
+
+var getLastInfo = function(msg) {
   console.log('Setup page');
   $('#page_url').html(anchorHtml(msg['pageUrl']));
   var mediaUrl = msg['srcUrl'];
@@ -109,8 +141,10 @@ var setupPage = function(msg) {
   $('#media_url').html(anchorHtml(mediaUrl));
   $('#media_type').text(msg['mediaType']);
   if (msg['fname']) {
+    console.log('Set from fname');
     $('#fname').val(msg['fname']);
   } else {
+    console.log('Set from mediaUrl');
     $('#fname').val(getFileName(mediaUrl));
   }
   if (msg['desc']) {
@@ -131,22 +165,22 @@ var setupPage = function(msg) {
 var getAsString = function() {
   console.log('getAsString');
   var lst = [];
-  lst.push('pageUrl: ' + $('#page_url').text());
-  var pageUrlShort = $('#page_short_url').find('a');
-  if (page_short_url.length) {
-    lst.push('pageShortUrl: ' + page_short_url.attr('href'));
+  lst.push('pageUrl: ' + getVal('#page_url'));
+  var pageUrlShort = getVal('#page_short_url');
+  if (pageUrlShort) {
+    lst.push('pageShortUrl: ' + pageUrlShort);
   }
-  lst.push('mediaUrl: ' + $('#media_url').text());
-  var mediaUrlShort = $('#media_short_url').find('a');
-  if (media_short_url.length) {
-    lst.push('mediaShortUrl: ' + media_short_url.attr('href'));
+  lst.push('mediaUrl: ' + getVal('#media_url'));
+  var mediaUrlShort = getVal('#media_short_url');
+  if (mediaUrlShort) {
+    lst.push('mediaShortUrl: ' + mediaUrlShort);
   }
-  lst.push('mediaType: ' + $('#media_type').text());
-  lst.push('fname: ' + $('#fname').val());
-  lst.push('desc: ' + $('#desc').val());
-  lst.push('license: ' + $('#license').val());
-  lst.push('author: ' + $('#author').val());
-  lst.push('date: ' + $('#date').text());
+  lst.push('mediaType: ' + getVal('#media_type'));
+  lst.push('fname: ' + getVal('#fname'));
+  lst.push('desc: ' + getVal('#desc'));
+  lst.push('license: ' + getVal('#license'));
+  lst.push('author: ' + getVal('#author'));
+  lst.push('date: ' + getVal('#date'));
   return lst.join('\n');
 };
 

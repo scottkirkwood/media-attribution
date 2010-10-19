@@ -18,8 +18,32 @@
  */
 var ma_info = {}
 
+var ma_keys = [
+  'alt',
+  'author',
+  'date',
+  'fname',
+  'desc',
+  'license',
+  'mediaType',
+  'pageUrl',
+  'pageShortUrl',
+  'srcUrl',
+  'mediaUrl',
+  'mediaShortUrl',
+];
+
 var createPage = function(msg) {
   console.log('Create page');
+  var clear_keys = [
+    'fname',
+    'desc',
+    'pageShortUrl',
+    'mediaShortUrl',
+  ];
+  for (var i = 0; i < clear_keys.length; i++) {
+    clear_keys[i] = undefined;
+  }
   saveLastInfo(msg);
   chrome.tabs.create({
       'url': chrome.extension.getURL('metadata.html')}
@@ -27,42 +51,29 @@ var createPage = function(msg) {
 };
 
 var saveLastInfo = function(msg) {
-  var keys = [
-    'alt',
-    'author',
-    'date',
-    'fname',
-    'desc',
-    'license',
-    'mediaType',
-    'pageUrl',
-    'srcUrl',
-    'shortSrcUrl',
-    'mediaUrl',
-    'shortMediaUrl',
-  ];
-  for (var i = 0; i < keys.length; i++) {
-    var key = keys[i];
-    if (msg[key]) {
+  for (var i = 0; i < ma_keys.length; i++) {
+    var key = ma_keys[i];
+    if (msg[key] && msg[key].length) {
       ma_info[key] = msg[key];
       console.log('Save> ' + key + ': ' + msg[key]);
     }
   }
 }
 
+var maybeSet = function(obj, key, val) {
+  if (val && val.length) {
+    obj[key] = val;
+  }
+};
+
 var getLastInfo = function(port) {
   console.log('getLastInfo');
-  port.postMessage({
-    cmd: 'lastInfo',
-    'alt': ma_info['alt'],
-    'author': ma_info['author'],
-    'date': ma_info['date'],
-    'license': ma_info['license'],
-    'linkUrl': ma_info['linkUrl'],
-    'mediaType': ma_info['mediaType'],
-    'pageUrl': ma_info['pageUrl'],
-    'srcUrl': ma_info['srcUrl'],
-  });
+  cmd = {'cmd': 'lastInfo'};
+  for (var i = 0; i < ma_keys.length; i++) {
+    var key = ma_keys[i];
+    maybeSet(cmd, key, ma_info[key]);
+  }
+  port.postMessage(cmd);
 };
 
 chrome.extension.onConnect.addListener(
