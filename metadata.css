@@ -55,6 +55,21 @@ label {
   padding: 0;
 }
 
+#license-icons {
+  position: relative;
+  left: 150px;
+  height: 44px;
+}
+
+.license-icon {
+  height: 44px;
+}
+
+.icon-link {
+  display: inline;
+  border: 0;
+}
+
 .image {
   display: block;
 }

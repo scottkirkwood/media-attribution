@@ -103,7 +103,6 @@ var getVal = function(id) {
   }
   var atag = elem.find('a');
   if (atag.length) {
-    console.log('Href');
     return atag.attr('href');
   }
   if (elem && elem.text()) {
@@ -132,6 +131,7 @@ var onChange = function() {
   maybeSet(cmd, 'pageUrl', getVal('#page_url'));
   maybeSet(cmd, 'mediaShortUrl', getVal('#media_short_url'));
   maybeSet(cmd, 'pageShortUrl', getVal('#page_short_url'));
+  addLicenseIcons(cmd['license']);
   port.postMessage(cmd);
 };
 
@@ -186,6 +186,49 @@ var getAsString = function() {
   lst.push('author: ' + getVal('#author'));
   lst.push('date: ' + getVal('#date'));
   return lst.join('\n');
+};
+
+var addCreativeCommonLicenses = function(license) {
+  var lic_text = {
+    'by': 'Attribution - You must attribute the work in the manner specified ' +
+          'by the author or licensor (but not in any way that suggests that ' +
+          'they endorse you or your use of the work).',
+    'sa': 'Share Alike - You can distribute derivative works only under a ' +
+          'license identical to the license that governs your work',
+    'nc': 'Non-commercial - You can copy, distribute, display, and perform ' +
+          'this work - and derivative works based upon it - ' +
+          'but for non-commercial purposes only.',
+    'nd': 'No derivative works - You can copy, distribute, display, and ' +
+          'perform only verbatim copies of your work, but no derivative ' +
+          'works based upon it.'
+  };
+  var re_cc = /creativecommons.org\/[^\/]+\/([^\/]+)/i;
+  var result = re_cc.exec(license);
+  if (!result) {
+    console.log('Unable to parse "' + license + '" as a creative commons license');
+    return;
+  }
+
+  var html = [];
+  html.push('<a href="' + license + '" class="icon-link"><img src="cc.svg" ' +
+            'alt="CC License" class="license-icon" title="Creative Commons License">');
+  var licenses = result[1].split('-');
+  for (var i = 0; i < licenses.length; i++) {
+    var lic = licenses[i];
+    if (lic in lic_text) {
+      html.push('<img src="' + lic + '.svg" title="' + lic_text[lic] +
+                '" class="license-icon">');
+    }
+  }
+  html.push('</a>');
+  $('#license-icons').html(html.join('\n'));
+};
+
+var addLicenseIcons = function(license) {
+  var re_cc = /creativecommons.org/i;
+  if (license && re_cc.test(license)) {
+    addCreativeCommonLicenses(license);
+  }
 };
 
 var saveAsUrl = function() {
