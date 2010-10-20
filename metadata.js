@@ -58,6 +58,10 @@ var googlShorten = function(id_from, id_hide, id_to) {
     url: "http://goo.gl/api/shorten",
     data: ({"url": url}),
     dataType: "json",
+    beforeSend: function(req) {
+      req.setRequestHeader('X-Auth-Google-Url-Shortener', 'true');
+      return true;
+    },
     success: function(data) {
       var shortUrl = data['short_url'];
       console.log('Short url is: ' + shortUrl);
@@ -110,13 +114,13 @@ var getVal = function(id) {
 
 
 var maybeSet = function(obj, key, val) {
-  if (val) {
+  if (val && val.length > 0) {
     obj[key] = val;
   }
 };
 
 var onChange = function() {
-  $('#savelinkas').attr('href', saveAsUrl());
+  $('#save_meta_as').attr('href', saveAsUrl());
   cmd = {'cmd': 'saveLastInfo'}
   maybeSet(cmd, 'author', getVal('#author'));
   maybeSet(cmd, 'desc', getVal('#desc'));
@@ -131,20 +135,22 @@ var onChange = function() {
   port.postMessage(cmd);
 };
 
+var pleaseRightClick = function() {
+    window.alert('Please right click, then click "Save Link As...".');
+    return false;
+};
+
 var getLastInfo = function(msg) {
   console.log('Setup page');
+  $('#save_media_as').bind('click', pleaseRightClick);
+  $('#save_meta_as').bind('click', pleaseRightClick);
+  var mediaUrl = msg['mediaUrl'];
   $('#page_url').html(anchorHtml(msg['pageUrl']));
-  var mediaUrl = msg['srcUrl'];
-  if (!mediaUrl) {
-    mediaUrl = msg['linkUrl'];
-  }
   $('#media_url').html(anchorHtml(mediaUrl));
   $('#media_type').text(msg['mediaType']);
   if (msg['fname']) {
-    console.log('Set from fname');
     $('#fname').val(msg['fname']);
   } else {
-    console.log('Set from mediaUrl');
     $('#fname').val(getFileName(mediaUrl));
   }
   if (msg['desc']) {
@@ -155,10 +161,8 @@ var getLastInfo = function(msg) {
   $('#license').val(msg['license']);
   $('#author').val(msg['author']);
   $('#date').text(msg['date']);
-  $('#savemediaas').attr('href', mediaUrl);
-  if (msg['srcUrl']) {
-    $('#theimage').attr('src', msg['srcUrl']);
-  }
+  $('#save_media_as').attr('href', mediaUrl);
+  $('#theimage').attr('src', mediaUrl);
   onChange();
 };
 

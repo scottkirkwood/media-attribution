@@ -63,6 +63,10 @@ var getAuthor = function() {
     // Name from picasaweb
     return [license, _user['nickname']];
   }
+  if ($('#lhid_user_nickname').length) {
+    // Name from picasaweb
+    return [license, $('#lhid_user_nickname').find('b').text()];
+  }
   var re_reservedBy = /((?:Some|All) rights reserved) by((?:\s\w+)+)/i;
   for (var i = 0; i < document.all.length; i++) {
     var txt = $(document.all[i]).text();
@@ -87,22 +91,36 @@ function endsWith(str, suffix) {
 }
 
 var getAlt = function(srcUrl) {
+  var alt;
+  if ($('#lhid_caption').length) {
+    // Picasa web
+    return $('#lhid_caption').find('.gphoto-photocaption-caption').text();
+  }
   $('img[src]').each(function(index, elem) {
     var curSrc = $(elem).attr('src');
     if (endsWith(srcUrl, curSrc)) {
-      var alt = $(elem).attr('alt');
-      if (alt) { return alt; }
-      alt = $(elem).attr('title');
-      if (alt) { return alt; }
-      var anchor = $(elem).closest("a");
-      alt = $(anchor).attr('title');
-      return alt;
+      var curAlt = $(elem).attr('alt');
+      if (curAlt) {
+        console.log('Found alt: ' + curAlt);
+        alt = curAlt;
+      } else {
+        curAlt = $(elem).attr('title');
+        if (curAlt) {
+          console.log('Found title: ' + curAlt);
+          alt = curAlt;
+        } else {
+          var anchor = $(elem).closest("a");
+          alt = $(anchor).attr('title');
+          console.log('Found <a title=: ' + alt);
+        }
+      }
     }
   });
+  return alt;
 };
 
 var createPage = function(msg) {
-  var alt = getAlt(msg['srcUrl']);
+  var alt = getAlt(msg['mediaUrl']);
   if (alt) {
     console.log('Found alt for image: ' + alt);
   }
@@ -123,6 +141,7 @@ var createPage = function(msg) {
   // Create the new page.
   port.postMessage({
     "cmd": "createPage",
+    "mediaUrl": mediaUrl,
     "license": license,
     "author": author,
     "alt": alt,
@@ -140,6 +159,7 @@ port.onMessage.addListener(function(msg) {
 });
 
 port.postMessage({
-  'cmd': 'getLastInfo'
+  'cmd': 'getLastInfo',
+  'mediaUrl' : mediaUrl
 });
 

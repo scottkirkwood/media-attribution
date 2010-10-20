@@ -16,62 +16,69 @@
  * @fileoverview download image and image info.
  * @author scottkirkwood@google.com (Scott Kirkwood)
  */
-var ma_info = {}
 
-var ma_keys = [
+// Store in memory information about each media.
+// Keyed off of mediaUrl
+var maInfo = {}
+// Each new meta tab (metadata.html) refers to a mediaUrl
+// map this relationship
+var maTabIdToMetaMap = {}
+// These are all the known keys for maInfo.
+var maKeys = [
   'alt',
   'author',
   'date',
-  'fname',
   'desc',
+  'fname',
   'license',
-  'mediaType',
-  'pageUrl',
-  'pageShortUrl',
-  'srcUrl',
-  'mediaUrl',
   'mediaShortUrl',
+  'mediaType',
+  'mediaUrl',
+  'pageShortUrl',
+  'pageUrl',
 ];
 
-var createPage = function(msg) {
-  console.log('Create page');
-  var clear_keys = [
-    'fname',
-    'desc',
-    'pageShortUrl',
-    'mediaShortUrl',
-  ];
-  for (var i = 0; i < clear_keys.length; i++) {
-    clear_keys[i] = undefined;
-  }
+var createMetaPage = function(msg) {
+  var mediaUrl = msg['mediaUrl'];
   saveLastInfo(msg);
   chrome.tabs.create({
-      'url': chrome.extension.getURL('metadata.html')}
+      'url': chrome.extension.getURL('metadata.html')},
+      function (tab) {
+        console.log('Adding tab id:' + tab.id);
+        console.log('MediaUrl3: ' + mediaUrl);
+        maTabIdToMetaMap[tab.id] = mediaUrl;
+      }
   );
 };
 
 var saveLastInfo = function(msg) {
-  for (var i = 0; i < ma_keys.length; i++) {
-    var key = ma_keys[i];
-    if (msg[key] && msg[key].length) {
-      ma_info[key] = msg[key];
-      console.log('Save> ' + key + ': ' + msg[key]);
+  var mediaUrl = msg['mediaUrl'];
+  if (!mediaUrl) {
+    console.log('Cant find mediaUrl');
+    return;
+  }
+  for (var i = 0; i < maKeys.length; i++) {
+    var key = maKeys[i];
+    if (key in msg) {
+      console.log('Save: ' + key + ' = ' + msg[key]);
+      maInfo[mediaUrl][key] = msg[key];
     }
   }
 }
 
 var maybeSet = function(obj, key, val) {
-  if (val && val.length) {
+  if (val) {
     obj[key] = val;
   }
 };
 
-var getLastInfo = function(port) {
-  console.log('getLastInfo');
-  cmd = {'cmd': 'lastInfo'};
-  for (var i = 0; i < ma_keys.length; i++) {
-    var key = ma_keys[i];
-    maybeSet(cmd, key, ma_info[key]);
+var getLastInfo = function(mediaUrl, port) {
+  cmd = {'cmd': 'lastInfo' };
+  for (var i = 0; i < maKeys.length; i++) {
+    var key = maKeys[i];
+    if (key in maInfo[mediaUrl]) {
+      maybeSet(cmd, key, maInfo[mediaUrl][key]);
+    }
   }
   port.postMessage(cmd);
 };
@@ -92,11 +99,18 @@ chrome.extension.onConnect.addListener(
               name: msg.name,
               value: obj });
         } else if (msg.cmd == 'createPage') {
-          createPage(msg);
+          createMetaPage(msg);
         } else if (msg.cmd == 'saveLastInfo') {
           saveLastInfo(msg);
         } else if (msg.cmd == 'getLastInfo') {
-          getLastInfo(port);
+          var tabId = port.sender.tab.id;
+          var mediaUrl = ('mediaUrl' in msg) ? msg['mediaUrl'] : maTabIdToMetaMap[tabId];
+          if (mediaUrl) {
+            console.log('Mediaurl: ' + mediaUrl);
+          } else {
+            console.log('Cannot find info for tabId: ' + tabId);
+          }
+          getLastInfo(mediaUrl, port);
         } else {
           console.log('Got unknown message: ' + msg.cmd);
           port.postMessage({error: 'unknown message'});
@@ -111,11 +125,16 @@ chrome.extension.onConnect.addListener(
  * The second will also execute a function.
  */
 function onDownloadAttrib(onClickData, tab) {
-  ma_info['mediaType'] = onClickData.mediaType;
-  ma_info['srcUrl'] = onClickData.srcUrl;
-  ma_info['pageUrl'] = onClickData.pageUrl;
-  ma_info['linkUrl'] = onClickData.linkUrl;
+  var mediaUrl = onClickData.srcUrl ? onClickData.srcUrl : onClickData.linkUrl;
+  console.log('mediaUrl: ' + mediaUrl);
+  maInfo[mediaUrl] = { };
+  maInfo[mediaUrl]['mediaType'] = onClickData.mediaType;
+  maInfo[mediaUrl]['mediaUrl'] = mediaUrl;
+  maInfo[mediaUrl]['pageUrl'] = onClickData.pageUrl ? onClickData.pageUrl : onClickData.frameUrl;
 
+  chrome.tabs.executeScript(null, {code: [
+    'var mediaUrl = "' + mediaUrl + '";'
+  ].join('\n')});
   chrome.tabs.executeScript(null, {file: 'jquery-1.4.2.min.js'});
   chrome.tabs.executeScript(null, {file: 'media_attrib.js'});
 }
