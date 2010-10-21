@@ -1,8 +1,10 @@
-pageUrl: http://creativecommons.org/about/downloads
-mediaUrl: http://mirrors.creativecommons.org/presskit/icons/cc.svg
-mediaType: undefined
-fname: cc.svg
-desc: CC
-license: http://creativecommons.org/licenses/by/3.0/
-author: 
-date: 10/18/2010 21:24:50
+{
+  "pageUrl": "http://creativecommons.org/about/downloads",
+  "mediaUrl": "http://mirrors.creativecommons.org/presskit/icons/cc.svg",
+  "mediaType": "undefined",
+  "fname": "cc.svg",
+  "desc": "CC",
+  "license": "http://creativecommons.org/licenses/by/3.0/",
+  "author": "",
+  "date": "10/18/2010 21:24:50"
+}

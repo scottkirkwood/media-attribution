@@ -1,8 +1,10 @@
-pageUrl: http://commons.wikimedia.org/wiki/File:Copyright.svg
-mediaUrl: http://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Copyright.svg/200px-Copyright.svg.png
-mediaType: image
-fname: copyright.svg
-desc: File:Copyright.svg
-license: http://creativecommons.org/licenses/by-sa/3.0/
-author: 
-date: 10/17/2010 02:52:10
+{
+  "pageUrl": "http://commons.wikimedia.org/wiki/File:Copyright.svg",
+  "mediaUrl": "http://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Copyright.svg/200px-Copyright.svg.png",
+  "mediaType": "image",
+  "fname": "copyright.svg",
+  "desc": "File:Copyright.svg",
+  "license": "http://creativecommons.org/licenses/by-sa/3.0/",
+  "author": "",
+  "date": "10/17/2010 02:52:10"
+}

@@ -1,8 +1,10 @@
-pageUrl: http://commons.wikimedia.org/wiki/File:Copyright-uncertain.svg
-mediaUrl: http://upload.wikimedia.org/wikipedia/commons/e/e4/Copyright-uncertain.svg
-mediaType: undefined
-fname: copyright-uncertain.svg
-desc: 
-license: http://creativecommons.org/licenses/by-sa/3.0/
-author: Dbl2010
-date: 10/18/2010 22:49:24
+{
+  "pageUrl": "http://commons.wikimedia.org/wiki/File:Copyright-uncertain.svg",
+  "mediaUrl": "http://upload.wikimedia.org/wikipedia/commons/e/e4/Copyright-uncertain.svg",
+  "mediaType": "undefined",
+  "fname": "copyright-uncertain.svg",
+  "desc": "",
+  "license": "http://creativecommons.org/licenses/by-sa/3.0/",
+  "author": "Dbl2010",
+  "date": "10/18/2010 22:49:24"
+}
