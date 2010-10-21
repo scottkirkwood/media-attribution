@@ -96,6 +96,8 @@ def _handler_txt(pathname):
       _rename_file(full_media_fname, full_user_fname)
     elif os.path.exists(full_pathname_no_txt):
       _rename_file(full_pathname_no_txt, full_user_fname)
+    elif os.path.exists(full_user_name):
+      print 'File %r already exists, skipping' % full_user_name
     else:
       print 'Unable to figure out what to do with %r' % user_fname
 
@@ -105,7 +107,7 @@ def make(pathname):
     try:
       _handler_txt(pathname)
     except IOError, e:
-      print e
+      pass  # ignore
 
 
 class OnWriteHandler(pyinotify.ProcessEvent):
