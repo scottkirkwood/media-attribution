@@ -231,6 +231,13 @@ var addAllRightsReserved = function(license) {
   $('#license-icons').html(html.join('\n'));
 };
 
+var addDunnoRights = function(license) {
+  var html = [];
+  html.push('<img src="copyright-uncertain.svg" title="' + license +
+            '" class="license-icon">');
+  $('#license-icons').html(html.join('\n'));
+};
+
 var addLicenseIcons = function(license) {
   var re_cc = /creativecommons.org/i;
   var re_allRights = /all\s+rights/i;
