@@ -18,6 +18,12 @@ var port = chrome.extension.connect({name: 'attrib'});
 
 var getLicense = function() {
   var license;
+  $('link[rel=copyright]').each(function(index, elem) {
+    license = $(elem).attr('href');
+  });
+  if (license) {
+    return license;
+  }
   $('a[href]').each(function(index, elem) {
     var href = $(elem).attr('href');
     if (href.search(/creativecommons.org.licenses/i) != -1) {
@@ -67,6 +73,10 @@ var getAuthor = function() {
     // Name from picasaweb
     return [license, $('#lhid_user_nickname').find('b').text()];
   }
+  if ($('#fileinfotpl_aut').length) {
+    console.log('wikimedia author');
+    return [license, $('#fileinfotpl_aut').parent().find('a').text()];
+  }
   var re_reservedBy = /((?:Some|All) rights reserved) by((?:\s\w+)+)/i;
   for (var i = 0; i < document.all.length; i++) {
     var txt = $(document.all[i]).text();
@@ -78,8 +88,6 @@ var getAuthor = function() {
       break; // TODO(scottkirkwood): find the closest to the image
     }
   }
-  console.log('license: ' + license);
-  console.log('author: ' + author);
   return [license, author];
 };
 

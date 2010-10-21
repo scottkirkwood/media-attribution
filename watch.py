@@ -102,7 +102,10 @@ def _handler_txt(pathname):
 
 def make(pathname):
   if pathname.endswith('.txt'):
-    _handler_txt(pathname)
+    try:
+      _handler_txt(pathname)
+    except IOError, e:
+      print e
 
 
 class OnWriteHandler(pyinotify.ProcessEvent):

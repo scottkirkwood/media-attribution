@@ -224,10 +224,22 @@ var addCreativeCommonLicenses = function(license) {
   $('#license-icons').html(html.join('\n'));
 };
 
+var addAllRightsReserved = function(license) {
+  var html = [];
+  html.push('<img src="copyright.svg" title="' + license +
+            '" class="license-icon">');
+  $('#license-icons').html(html.join('\n'));
+};
+
 var addLicenseIcons = function(license) {
   var re_cc = /creativecommons.org/i;
-  if (license && re_cc.test(license)) {
+  var re_allRights = /all\s+rights/i;
+  if (re_cc.test(license)) {
     addCreativeCommonLicenses(license);
+  } else if (re_allRights.test(license)) {
+    addAllRightsReserved(license);
+  } else {
+    addDunnoRights(license);
   }
 };
 
