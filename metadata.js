@@ -166,26 +166,26 @@ var getLastInfo = function(msg) {
   onChange();
 };
 
-var getAsString = function() {
-  console.log('getAsString');
-  var lst = [];
-  lst.push('pageUrl: ' + getVal('#page_url'));
+var getAsJsonString = function() {
+  console.log('getAsJsonString');
+  var obj = {};
+  obj['pageUrl'] = getVal('#page_url');
   var pageUrlShort = getVal('#page_short_url');
   if (pageUrlShort) {
-    lst.push('pageShortUrl: ' + pageUrlShort);
+    obj['pageShortUrl'] = pageUrlShort;
   }
-  lst.push('mediaUrl: ' + getVal('#media_url'));
+  obj['mediaUrl'] = getVal('#media_url');
   var mediaUrlShort = getVal('#media_short_url');
   if (mediaUrlShort) {
-    lst.push('mediaShortUrl: ' + mediaUrlShort);
+    obj['mediaShortUrl'] = mediaUrlShort;
   }
-  lst.push('mediaType: ' + getVal('#media_type'));
-  lst.push('fname: ' + getVal('#fname'));
-  lst.push('desc: ' + getVal('#desc'));
-  lst.push('license: ' + getVal('#license'));
-  lst.push('author: ' + getVal('#author'));
-  lst.push('date: ' + getVal('#date'));
-  return lst.join('\n');
+  obj['mediaType'] = getVal('#media_type');
+  obj['fname'] = getVal('#fname');
+  obj['desc'] = getVal('#desc');
+  obj['license'] = getVal('#license');
+  obj['author'] = getVal('#author');
+  obj['date'] = getVal('#date');
+  return JSON.stringify(obj, null, 2);
 };
 
 var addCreativeCommonLicenses = function(license) {
@@ -251,9 +251,9 @@ var addLicenseIcons = function(license) {
 };
 
 var saveAsUrl = function() {
-  var toStr = getAsString();
+  var toStr = getAsJsonString();
   console.log('ToSTr:' + toStr);
-  return "data:text/plain;charset=utf-8;base64," + btoa(getAsString());
+  return "data:text/plain;charset=utf-8;base64," + btoa(toStr);
 };
 
 $(document).ready(function() {
