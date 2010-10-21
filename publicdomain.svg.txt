@@ -1,0 +1,8 @@
+pageUrl: http://creativecommons.org/about/downloads
+mediaUrl: http://mirrors.creativecommons.org/presskit/icons/publicdomain.svg
+mediaType: undefined
+fname: publicdomain.svg
+desc: 
+license: http://creativecommons.org/licenses/by/3.0/
+author: 
+date: 10/18/2010 21:24:50
