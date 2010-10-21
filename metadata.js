@@ -210,13 +210,13 @@ var addCreativeCommonLicenses = function(license) {
   }
 
   var html = [];
-  html.push('<a href="' + license + '" class="icon-link"><img src="cc.svg" ' +
+  html.push('<a href="' + license + '" class="icon-link"><img src="img/cc.svg" ' +
             'alt="CC License" class="license-icon" title="Creative Commons License">');
   var licenses = result[1].split('-');
   for (var i = 0; i < licenses.length; i++) {
     var lic = licenses[i];
     if (lic in lic_text) {
-      html.push('<img src="' + lic + '.svg" title="' + lic_text[lic] +
+      html.push('<img src="img/' + lic + '.svg" title="' + lic_text[lic] +
                 '" class="license-icon">');
     }
   }
@@ -226,14 +226,14 @@ var addCreativeCommonLicenses = function(license) {
 
 var addAllRightsReserved = function(license) {
   var html = [];
-  html.push('<img src="copyright.svg" title="' + license +
+  html.push('<img src="img/copyright.svg" title="' + license +
             '" class="license-icon">');
   $('#license-icons').html(html.join('\n'));
 };
 
 var addDunnoRights = function(license) {
   var html = [];
-  html.push('<img src="copyright-uncertain.svg" title="' + license +
+  html.push('<img src="img/copyright-uncertain.svg" title="' + license +
             '" class="license-icon">');
   $('#license-icons').html(html.join('\n'));
 };
