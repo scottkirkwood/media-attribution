@@ -74,8 +74,9 @@ var getAuthor = function() {
     return [license, $('#lhid_user_nickname').find('b').text()];
   }
   if ($('#fileinfotpl_aut').length) {
-    console.log('wikimedia author');
-    return [license, $('#fileinfotpl_aut').parent().find('a').text()];
+    author = $('#fileinfotpl_aut').parent().find('p').text();
+    console.log('wikimedia author: ' + author);
+    return [license, author];
   }
   var re_reservedBy = /((?:Some|All) rights reserved) by((?:\s\w+)+)/i;
   for (var i = 0; i < document.all.length; i++) {
@@ -98,11 +99,18 @@ function endsWith(str, suffix) {
   return str.indexOf(suffix, str.length - suffix.length) !== -1;
 }
 
-var getAlt = function(srcUrl) {
+var getDescription = function(srcUrl) {
   var alt;
   if ($('#lhid_caption').length) {
     // Picasa web
-    return $('#lhid_caption').find('.gphoto-photocaption-caption').text();
+    alt = $('#lhid_caption').find('.gphoto-photocaption-caption').text();
+    console.log('Picasaweb caption: ' + alt);
+    return alt;
+  }
+  if ($('#fileinfotpl_desc').length) {
+    alt = $('#fileinfotpl_desc').parent().find('p').text();
+    console.log('wikipedia desc' + alt);
+    return alt;
   }
   $('img[src]').each(function(index, elem) {
     var curSrc = $(elem).attr('src');
@@ -128,7 +136,7 @@ var getAlt = function(srcUrl) {
 };
 
 var createPage = function(msg) {
-  var alt = getAlt(msg['mediaUrl']);
+  var alt = getDescription(msg['mediaUrl']);
   if (alt) {
     console.log('Found alt for image: ' + alt);
   }

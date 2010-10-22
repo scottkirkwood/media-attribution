@@ -1,27 +1,31 @@
 
 fieldset {
-  width: 95%;
-  line-height: 1ex;
-  padding:20px;
+  width: 970px;
+  padding: 10px 1px 10px 15px;
+  display: table;
 }
 
-span {
+.notarow {
+  display: table-row;
+  height: 30px;
+}
+
+.notarow span {
+  display: table-cell;
+}
+
+.notarow a {
   display: block;
-}
-
-a {
-  display: inline-block;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-  width: 85%;
+  width: 830px;
 }
 
 label {
-  clear: left;
-  float: left;
-  padding-top: 2px;
-  width: 150px;
+  display: table-cell;
+  width: 140px;
+  height: 30px;
 }
 
 .button {
@@ -29,26 +33,17 @@ label {
 }
 
 .short-text {
-  clear: right;
-  display: block;
-  width: 300px;
-  line-height: 1ex;
-  margin: 0;
-  padding: 0;
+  display: table-cell;
+  width: 600px;
 }
 
 .long-text {
-  clear: right;
-  display: block;
-  width: 600px;
-  line-height: 1ex;
-  margin: 0;
-  padding: 0;
+  display: table-cell;
+  width: 700px;
 }
 
 .license-text {
-  clear: right;
-  display: block;
+  display: table-cell;
   width: 600px;
   line-height: 1ex;
   margin: 0;
@@ -56,17 +51,54 @@ label {
 }
 
 #license-icons {
-  position: relative;
-  left: 150px;
+  display: table-cell;
   height: 44px;
+}
+
+@-webkit-keyframes toleft {
+  from {
+    opacity: 0.0;
+    left: 900px;
+  }
+  to {
+    opacity: 1.0;
+    left: 0px;
+  }
 }
 
 .license-icon {
+  display: inline-block;
   height: 44px;
+  width: 44px;
+  position: relative;
+}
+
+.license-1 {
+  -webkit-animation-name: toleft;
+  -webkit-animation-duration: 1s;
+  -webkit-animation-direction: forwards;
+}
+
+.license-2 {
+  -webkit-animation-name: toleft;
+  -webkit-animation-duration: 1.5s;
+  -webkit-animation-direction: forwards;
+}
+
+.license-3 {
+  -webkit-animation-name: toleft;
+  -webkit-animation-duration: 2s;
+  -webkit-animation-direction: forwards;
+}
+
+.license-4 {
+  -webkit-animation-name: toleft;
+  -webkit-animation-duration: 2.5s;
+  -webkit-animation-direction: forwards;
 }
 
 .icon-link {
-  display: inline;
+  display: inline-block;
   border: 0;
 }
 
@@ -75,14 +107,16 @@ label {
 }
 
 .savelinkas {
+  display: inline-block;
   padding: 10px;
-  margin: 10px;
+  margin: 5px;
+  width: auto;
+  height: auto;
+  border: 1px solid #333;
+  border-radius: 12px;
   background: --webkit-gradient(linear, left top, left bottom,
                                 from(rgba(200, 200, 240, 0.16)),
                                 to(rgba(255, 255, 255, 0.16)));
-  width: auto;
-  border: 1px solid #333;
-  border-radius: 9px;
   text-shadow: rgba(64, 64, 64, 0.5) 3px 3px 2px;
   box-shadow: rgba(0, 0, 128, 0.25) 4px 4px 10px;
 };

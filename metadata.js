@@ -211,13 +211,13 @@ var addCreativeCommonLicenses = function(license) {
 
   var html = [];
   html.push('<a href="' + license + '" class="icon-link"><img src="img/cc.svg" ' +
-            'alt="CC License" class="license-icon" title="Creative Commons License">');
+            'alt="CC License" class="license-icon license-1" title="Creative Commons License">');
   var licenses = result[1].split('-');
   for (var i = 0; i < licenses.length; i++) {
     var lic = licenses[i];
     if (lic in lic_text) {
       html.push('<img src="img/' + lic + '.svg" title="' + lic_text[lic] +
-                '" class="license-icon">');
+                '" class="license-icon license-' + (i + 2) + '">');
     }
   }
   html.push('</a>');

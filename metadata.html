@@ -28,41 +28,64 @@
   <body>
   <fieldset>
     <legend>Attribution Information:</legend>
+    <div class="notarow">
     <label for="page_url">Page URL:</label>
-    <span id="page_url"></span><br>
+    <span id="page_url"></span>
+    </div>
 
+    <div class="notarow">
     <label for="page_short_url">Page short url:</label>
     <input type="button" class="button" id="page_short_url_but"
       value="get goog.gl URL" onclick="googlShorten('page_url', this.id, 'page_short_url');"/>
     <span id="page_short_url"></span><br>
+    </div>
 
+    <div class="notarow">
     <label for="media_url">Media URL:</label>
     <span id="media_url"></span><br>
+    </div>
 
+    <div class="notarow">
     <label for="media_short_url">Media short url:</label>
     <input type="button" class="button" id="media_short_url_but"
       value="get goog.gl URL" onclick="googlShorten('media_url', this.id, 'media_short_url');"/>
     <span id="media_short_url"></span><br>
+    </div>
 
+    <div class="notarow">
     <label for="fname">File name:</label>
     <input id="fname" onblur="onChange();" class="short-text" type="text" name="fname" size="40"/><br>
+    </div>
 
+    <div class="notarow">
     <label for="desc">Desc:</label>
     <input id="desc" onblur="onChange();" class="long-text" type="text" name="desc"/><br>
+    </div>
 
+    <div class="notarow">
     <label for="media_type">Media type:</label>
     <span id="media_type"></span><br/>
+    </div>
 
+    <div class="notarow">
     <label for="date">Date:</label>
     <span id="date"></span><br>
+    </div>
 
+    <div class="notarow">
     <label for="author">Author:</label>
     <input id="author" onblur="onChange();" class="short-text" type="text" name="author" size="40"/><br>
+    </div>
 
+    <div class="notarow">
     <label for="license">License:</label>
     <input id="license" onblur="onChange();" class="license-text" type="text" name="license"/><br>
+    </div>
 
+    <div class="notarow">
+    <label></label>
     <div id="license-icons"></div>
+    </div>
 
   </fieldset>
 
