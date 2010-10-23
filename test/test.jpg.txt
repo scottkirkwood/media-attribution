@@ -1,0 +1,10 @@
+{
+  "author": "Scott Kirkwood", 
+  "date": "10/22/2010 20:24:11", 
+  "desc": "", 
+  "fname": "test.jpg", 
+  "license": "Some Rights Reserved", 
+  "mediaType": "image", 
+  "mediaUrl": "http://localhost:8080/test.jpg", 
+  "pageUrl": "http://localhost:8080/test.html"
+}

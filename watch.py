@@ -39,12 +39,19 @@ For example:
    Linux, Python 2.6, Pyinotify
 """
 
+import copy
 import os
 import pyinotify
-import subprocess
 import re
+import simplejson
+import subprocess
 import sys
+try:
+  import pyexiv2
+except ImportError, e:
+  print e
 
+IGNORE_NEXT_UPDATE = {}
 
 def _rename_file(from_name, to_name):
   if from_name == to_name:
@@ -54,55 +61,88 @@ def _rename_file(from_name, to_name):
   if os.path.exists(to_name):
     print 'Removing existing %r' % to_name
     os.unlink(to_name)
+  IGNORE_NEXT_UPDATE[to_name] = True
   os.rename(from_name, to_name)
 
+
+def _update_info(txt_fname, info, info_old):
+  """Update txt_fname with the new information."""
+  IGNORE_NEXT_UPDATE[txt_fname] = True
+  of = open(txt_fname, 'w')
+  simplejson.dump(info, of, sort_keys=True, indent=2)
+  print 'Updated %r' % txt_fname
+  of.close()
+
+
+def _exif_data(media_fname, info, txt_fname):
+  metadata = pyexiv2.Image(media_fname)
+  metadata.readMetadata();
+
+  infonew = copy.copy(info)
+  if 'Exif.Image.Copyright' in metadata.exifKeys():
+    copyright = metadata['Exif.Image.Copyright']
+    if info['license'] != copyright:
+      print 'Exif Copyright: ' + copyright
+      infonew['license'] = copyright
+  if 'Exif.Image.Artist' in metadata.exifKeys():
+    artist = metadata['Exif.Image.Artist']
+    if info['author'] != artist:
+      print 'Exif Artist: ' + artist
+      infonew['author'] = artist
+  elif 'Iptc.Application2.Caption' in metadata.iptcKeys():
+    desc = metadata['Iptc.Application2.Caption']
+    if info['desc'] != desc:
+      print 'Ipt desc: ' + desc
+      infonew['desc'] = desc
+  if infonew != info:
+    _update_info(txt_fname, infonew, info)
 
 def _handler_txt(pathname):
   print 'Handling %r' % pathname
   info = {}
-  user_fname = None
-  mediaUrl = None
-  for line in open(pathname):
-    if line.startswith('#'):
-      continue
-    keyval = line.split(':', 1)
-    if len(keyval) != 2:
-      break
-    key = keyval[0].strip()
-    val = keyval[1].strip()
-    if key == 'mediaUrl':
-      mediaUrl = val
-    if key == 'fname':
-      user_fname = val
-      break
-  if not mediaUrl or not user_fname:
+  try:
+    info = simplejson.load(open(pathname));
+  except TypeError, e:
+    print e
+    return
+  if not info:
     return
 
   re_fname = re.compile(r'/([^/]+)$')
-  grps = re_fname.search(mediaUrl)
+  grps = re_fname.search(info['mediaUrl'])
   if grps:
     media_fname = grps.group(1)
-  user_fname_txt = user_fname + '.txt'
+  user_fname_txt = info['fname'] + '.txt'
   cur_dir, meta_name = os.path.split(pathname)
   print 'Parsed %r' % meta_name
   full_pathname_no_txt = pathname[:-4]
-  full_user_fname = os.path.join(cur_dir, user_fname)
+  full_user_fname = os.path.join(cur_dir, info['fname'])
   full_user_fname_txt = os.path.join(cur_dir, user_fname_txt)
   full_media_fname = os.path.join(cur_dir, media_fname)
   if pathname != full_user_fname_txt:
+    IGNORE_NEXT_UPDATE[full_user_fname_txt] = True
     _rename_file(pathname, full_user_fname_txt)
-  if meta_name != user_fname:
+  if meta_name != info['fname']:
     if os.path.exists(full_media_fname):
       _rename_file(full_media_fname, full_user_fname)
     elif os.path.exists(full_pathname_no_txt):
       _rename_file(full_pathname_no_txt, full_user_fname)
-    elif os.path.exists(full_user_name):
-      print 'File %r already exists, skipping' % full_user_name
+    elif os.path.exists(full_user_fname):
+      print 'File %r already exists, skipping' % full_user_fname
     else:
-      print 'Unable to figure out what to do with %r' % user_fname
+      print 'Unable to figure out what to do with %r' % info['fname']
+
+  if os.path.exists(full_user_fname):
+    try:
+      _exif_data(full_user_fname, info, full_user_fname_txt)
+    except Exception, e:
+      print e
 
 
 def make(pathname):
+  if pathname in IGNORE_NEXT_UPDATE:
+    del IGNORE_NEXT_UPDATE[pathname]
+    return
   if pathname.endswith('.txt'):
     try:
       _handler_txt(pathname)

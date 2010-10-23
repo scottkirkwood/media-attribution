@@ -168,23 +168,24 @@ var getLastInfo = function(msg) {
 
 var getAsJsonString = function() {
   console.log('getAsJsonString');
-  var obj = {};
-  obj['pageUrl'] = getVal('#page_url');
+  var obj = {
+    'author': getVal('#author'),
+    'date': getVal('#date'),
+    'desc': getVal('#desc'),
+    'fname': getVal('#fname'),
+    'license': getVal('#license'),
+    'mediaType': getVal('#media_type'),
+    'mediaUrl': getVal('#media_url')
+  };
   var pageUrlShort = getVal('#page_short_url');
-  if (pageUrlShort) {
-    obj['pageShortUrl'] = pageUrlShort;
-  }
-  obj['mediaUrl'] = getVal('#media_url');
   var mediaUrlShort = getVal('#media_short_url');
   if (mediaUrlShort) {
     obj['mediaShortUrl'] = mediaUrlShort;
   }
-  obj['mediaType'] = getVal('#media_type');
-  obj['fname'] = getVal('#fname');
-  obj['desc'] = getVal('#desc');
-  obj['license'] = getVal('#license');
-  obj['author'] = getVal('#author');
-  obj['date'] = getVal('#date');
+  if (pageUrlShort) {
+    obj['pageShortUrl'] = pageUrlShort;
+  }
+  obj['pageUrl'] = getVal('#page_url');
   return JSON.stringify(obj, null, 2);
 };
 
@@ -227,14 +228,14 @@ var addCreativeCommonLicenses = function(license) {
 var addAllRightsReserved = function(license) {
   var html = [];
   html.push('<img src="img/copyright.svg" title="' + license +
-            '" class="license-icon">');
+            '" class="license-icon license-1">');
   $('#license-icons').html(html.join('\n'));
 };
 
 var addDunnoRights = function(license) {
   var html = [];
   html.push('<img src="img/copyright-uncertain.svg" title="' + license +
-            '" class="license-icon">');
+            '" class="license-icon license-1">');
   $('#license-icons').html(html.join('\n'));
 };
 

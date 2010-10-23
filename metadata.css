@@ -69,7 +69,7 @@ label {
 .license-icon {
   display: inline-block;
   height: 44px;
-  width: 44px;
+  width: auto;
   position: relative;
 }
 
