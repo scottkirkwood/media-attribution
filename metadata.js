@@ -106,7 +106,8 @@ var addCreativeCommonLicenses = function(license) {
           'but for non-commercial purposes only.',
     'nd': 'No derivative works - You can copy, distribute, display, and ' +
           'perform only verbatim copies of your work, but no derivative ' +
-          'works based upon it.'
+          'works based upon it.',
+    'public': 'Public domain work'
   };
   var re_cc = /creativecommons.org\/[^\/]+\/([^\/]+)/i;
   var result = re_cc.exec(license);
@@ -127,14 +128,27 @@ var addCreativeCommonLicenses = function(license) {
     }
   }
   html.push('</a>');
+  var re_public = /public.domain/i;
+  if (re_public.test(license)) {
+    html.push('<a href="' + license + '" class="icon-link">');
+    html.push('<img src="img/publicdomain.svg" title="' + lic_text['public'] +
+              '" class="license-icon license-' + (i + 2) + '">');
+  html.push('</a>');
+  }
   $('#license-icons').html(html.join('\n'));
 };
 
 var addLicenseIcons = function(license) {
   var re_cc = /creativecommons.org/i;
+  var re_public_domain = /public.domain/i;
   var re_allRights = /all\s+rights/i;
-  if (re_cc.test(license)) {
-    addCreativeCommonLicenses(license);
+  if (re_cc.test(license) || re_public_domain.test(license)) {
+    if (re_cc.test(license)) {
+      addCreativeCommonLicenses(license);
+    }
+    if (re_public_domain.test(license)) {
+      addPublicDomainLicense(license);
+    }
   } else if (re_allRights.test(license)) {
     addAllRightsReserved(license);
   } else {

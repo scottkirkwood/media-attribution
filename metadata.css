@@ -97,8 +97,15 @@ label {
   -webkit-animation-direction: forwards;
 }
 
-.icon-link {
-  display: inline-block;
+.license-5 {
+  -webkit-animation-name: toleft;
+  -webkit-animation-duration: 3s;
+  -webkit-animation-direction: forwards;
+}
+
+
+a.icon-link {
+  display: inline;
   text-decoration: none;
   border: 0;
 }
