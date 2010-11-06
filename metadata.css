@@ -99,6 +99,7 @@ label {
 
 .icon-link {
   display: inline-block;
+  text-decoration: none;
   border: 0;
 }
 

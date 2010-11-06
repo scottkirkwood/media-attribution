@@ -16,24 +16,51 @@ console.log('media_attrib.js');
 
 var port = chrome.extension.connect({name: 'attrib'});
 
+// Add license if it's not a substring of another license.
+var maybeAddLicense = function(licenses, href) {
+  for (var i = 0; i < licenses.length; i++) {
+    var lic = licenses[i];
+    if (!href || href.indexOf(lic) != -1 || lic.indexOf(href) != -1) {
+      return;
+    }
+  }
+  licenses.push(href);
+};
+
 var getLicense = function() {
-  var license;
-  $('link[rel=copyright]').each(function(index, elem) {
-    license = $(elem).attr('href');
+  var licenses = [];
+  $('.licensetpl_wrapper,.licensetpl,.layouttemplate').each(function(index, elem) {
+    // Used commons.wikimedia.org
+    console.log('commons wikimedia');
+    $(elem).find('a[href]').each(function(index, child) {
+      var href = $(child).attr('href');
+      if (href.search(/.wiki/i) == -1 || href.search(/public_domain/i) != -1) {
+        // Grab all hrefs not pointing to wiki...
+        // Unless it's public_domain
+        maybeAddLicense(licenses, href);
+      }
+    });
+    $(elem).find('.licensetpl_link').each(function(index, child) {
+      var href = $(child).text();
+      maybeAddLicense(licenses, href);
+    });
   });
-  if (license) {
-    return license;
+  $('link[rel=copyright]').each(function(index, elem) {
+    // This is often the licensing for the page and not the media.
+    console.log('link[rel=copyright]');
+    maybeAddLicense(licenses, $(elem).attr('href'));
+  });
+  if (licenses) {
+    return licenses.join(',');
   }
   $('a[href]').each(function(index, elem) {
     var href = $(elem).attr('href');
     if (href.search(/creativecommons.org.licenses/i) != -1) {
       console.log('Found CC: ' + href);
-      if (!license || href.length > license.length) {
-        license = href;
-      }
+      maybeAddLicense(licenses, href);
     }
   });
-  return license;
+  return license.join(', ');
 };
 
 
