@@ -1,0 +1,9 @@
+{
+  "author": "Zscout370",
+  "date": "11/01/2010 18:48:14",
+  "desc": "Copyleft",
+  "fname": "copyleft.svg",
+  "license": "http://en.wikipedia.org/wiki/public_domain,http://creativecommons.org/licenses/by-sa/3.0/",
+  "mediaUrl": "http://upload.wikimedia.org/wikipedia/commons/8/8b/Copyleft.svg",
+  "pageUrl": "http://commons.wikimedia.org/wiki/File:Copyleft.svg"
+}

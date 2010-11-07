@@ -1,0 +1,9 @@
+{
+  "author": "Aurelio A. Heckert <aurium@gmail.com>",
+  "date": "11/07/2010 00:40:48",
+  "desc": "A Bold GNU Head",
+  "fname": "gnu.svg",
+  "license": "http://artlibre.org/licence/lal/en,www.artlibre.org/licence/lal/en,http://creativecommons.org/licenses/by-sa/3.0/",
+  "mediaUrl": "http://upload.wikimedia.org/wikipedia/commons/2/22/Heckert_GNU_white.svg",
+  "pageUrl": "http://en.wikipedia.org/wiki/File:Heckert_GNU_white.svg"
+}

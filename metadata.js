@@ -94,7 +94,7 @@ var addDunnoRights = function(license) {
   $('#license-icons').html(html.join('\n'));
 };
 
-var addCreativeCommonLicenses = function(license) {
+var addCreativeCommonLicenses = function(license, offset) {
   var lic_text = {
     'by': 'Attribution - You must attribute the work in the manner specified ' +
           'by the author or licensor (but not in any way that suggests that ' +
@@ -106,49 +106,69 @@ var addCreativeCommonLicenses = function(license) {
           'but for non-commercial purposes only.',
     'nd': 'No derivative works - You can copy, distribute, display, and ' +
           'perform only verbatim copies of your work, but no derivative ' +
-          'works based upon it.',
-    'public': 'Public domain work'
+          'works based upon it.'
   };
   var re_cc = /creativecommons.org\/[^\/]+\/([^\/]+)/i;
   var result = re_cc.exec(license);
+  var html = [];
   if (!result) {
     console.log('Unable to parse "' + license + '" as a creative commons license');
-    return;
+    return html;
   }
 
-  var html = [];
   html.push('<a href="' + license + '" class="icon-link"><img src="img/cc.svg" ' +
-            'alt="CC License" class="license-icon license-1" title="Creative Commons License">');
+            'alt="CC License" class="license-icon license-"' + (offset + 1) +
+            ' title="Creative Commons License">');
   var licenses = result[1].split('-');
   for (var i = 0; i < licenses.length; i++) {
     var lic = licenses[i];
     if (lic in lic_text) {
       html.push('<img src="img/' + lic + '.svg" title="' + lic_text[lic] +
-                '" class="license-icon license-' + (i + 2) + '">');
+                '" class="license-icon license-' + (i + offset + 2) + '">');
     }
   }
   html.push('</a>');
-  var re_public = /public.domain/i;
-  if (re_public.test(license)) {
-    html.push('<a href="' + license + '" class="icon-link">');
-    html.push('<img src="img/publicdomain.svg" title="' + lic_text['public'] +
-              '" class="license-icon license-' + (i + 2) + '">');
+  return html;
+};
+
+var addPublicDomainLicense = function(license, offset) {
+  var html = [];
+  html.push('<a href="' + license + '" class="icon-link">');
+  html.push('<img src="img/publicdomain.svg" title="Public Domain"' +
+            ' class="license-icon license-' + (offset + 1) + '">');
   html.push('</a>');
-  }
-  $('#license-icons').html(html.join('\n'));
+  return html;
+};
+
+var addArtLibre = function(license, offset) {
+  var html = [];
+  html.push('<a href="' + license + '" class="icon-link">');
+  html.push('<img src="img/copyleft.svg" title="Copyleft"' +
+            ' class="license-icon license-' + (offset + 1) + '">');
+  html.push('</a>');
+  return html;
 };
 
 var addLicenseIcons = function(license) {
   var re_cc = /creativecommons.org/i;
   var re_public_domain = /public.domain/i;
+  var re_artlibre = /artlibre/i;
   var re_allRights = /all\s+rights/i;
-  if (re_cc.test(license) || re_public_domain.test(license)) {
-    if (re_cc.test(license)) {
-      addCreativeCommonLicenses(license);
+  if (re_cc.test(license) || re_public_domain.test(license) ||
+      re_artlibre.text(license)) {
+    var lines = [];
+    var lics = license.split(',');
+    for (var i = 0; i < lics.length; i++) {
+      if (re_cc.test(lics[i])) {
+        lines = lines.concat(addCreativeCommonLicenses(lics[i], lines.length));
+      } else if (re_public_domain.test(lics[i])) {
+        lines = lines.concat(addPublicDomainLicense(lics[i], lines.length));
+      } else if (re_artlibre.test(lics[i])) {
+        lines = lines.concat(addArtLibre(lics[i], lines.length));
+      }
     }
-    if (re_public_domain.test(license)) {
-      addPublicDomainLicense(license);
-    }
+    console.log(lines);
+    $('#license-icons').html(lines.join('\n'));
   } else if (re_allRights.test(license)) {
     addAllRightsReserved(license);
   } else {
