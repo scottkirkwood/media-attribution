@@ -16,15 +16,29 @@ console.log('media_attrib.js');
 
 var port = chrome.extension.connect({name: 'attrib'});
 
-// Add license if it's not a substring of another license.
-var maybeAddLicense = function(licenses, href) {
-  for (var i = 0; i < licenses.length; i++) {
-    var lic = licenses[i];
-    if (!href || href.indexOf(lic) != -1 || lic.indexOf(href) != -1) {
+// See if url1 and url2 are basically the same.
+var _compareUrls = function(url1, url2) {
+  var re_trim = /(http:\/\/)*(wwww\.)*/i;
+  var re_deed = /\/deed.../;
+  url1 = url1.replace(re_trim, '');
+  url1 = url1.replace(re_deed, '');
+  url2 = url2.replace(re_trim, '');
+  url2 = url2.replace(re_deed, '');
+  if (url1.indexOf(url2) != -1 || url2.indexOf(url1) != -1) {
+    return true;
+  }
+  return false;
+};
+
+// Add href if it's not a substring of another href.
+var maybeAddHref = function(hrefs, href) {
+  for (var i = 0; i < hrefs.length; i++) {
+    var lic = hrefs[i];
+    if (_compareUrls(href, lic)) {
       return;
     }
   }
-  licenses.push(href);
+  hrefs.push(href);
 };
 
 var getLicense = function() {
@@ -37,28 +51,32 @@ var getLicense = function() {
       if (href.search(/.wiki/i) == -1 || href.search(/public_domain/i) != -1) {
         // Grab all hrefs not pointing to wiki...
         // Unless it's public_domain
-        maybeAddLicense(licenses, href);
+        maybeAddHref(licenses, href);
       }
     });
     $(elem).find('.licensetpl_link').each(function(index, child) {
       var href = $(child).text();
-      maybeAddLicense(licenses, href);
+      maybeAddHref(licenses, href);
     });
   });
-  $('link[rel=copyright]').each(function(index, elem) {
-    // This is often the licensing for the page and not the media.
-    console.log('link[rel=copyright]');
-    maybeAddLicense(licenses, $(elem).attr('href'));
-  });
-  if (licenses) {
+  if (licenses.length) {
+    console.log('wikimedia?');
     return licenses.join(',');
   }
   $('a[href]').each(function(index, elem) {
     var href = $(elem).attr('href');
     if (href.search(/creativecommons.org.licenses/i) != -1) {
+      maybeAddHref(licenses, href);
       console.log('Found CC: ' + href);
-      maybeAddLicense(licenses, href);
     }
+  });
+  if (licenses.length) {
+    return licenses.join(',');
+  }
+  $('link[rel=copyright]').each(function(index, elem) {
+    // This is often the licensing for the page and not the media.
+    console.log('link[rel=copyright]');
+    maybeAddHref(licenses, $(elem).attr('href'));
   });
   return license.join(', ');
 };
@@ -79,7 +97,7 @@ var isDefined = function(variable, opt_subvariables) {
     for (var i in opt_subvariables) {
       if (sub[opt_subvariables[i]]) {
         sub = sub[opt_subvariables[i]];
-        console.log('found: ' + opt_subvariables[i]);
+        console.log('Found: ' + opt_subvariables[i]);
       } else {
         console.log('Not found: ' + opt_subvariables[i]);
         return false;
@@ -94,7 +112,7 @@ var getAuthor = function() {
   var author;
   if (isDefined('_user', ['nickname'])) {
     // Name from picasaweb
-    return [license, _user['nickname']];
+    return [license, _user.nickname];
   }
   if ($('#lhid_user_nickname').length) {
     // Name from picasaweb
@@ -112,11 +130,31 @@ var getAuthor = function() {
       var result = re_reservedBy.exec(txt);
       license = result[1];
       author = result[2].replace(/^\s+/, '');
-      console.log('found: ' + author);
+      console.log('found author: ' + author);
       break; // TODO(scottkirkwood): find the closest to the image
     }
   }
   return [license, author];
+};
+
+var getAuthorUrls = function() {
+  var authors = [];
+  if ($('#fileinfotpl_aut').length) {
+    $('#fileinfotpl_aut').parent().find('a[href]').each(function(index, node) {
+      var href = $(node).attr('href');
+      var txt = $(node).text();
+      console.log('author href: ' + href + ' = ' + txt);
+      authors.push('<a href="' + href + '">' + txt + '</a>');
+    });
+  }
+  var href = location.href;
+  var re_flickr = /(http:\/\/(?:www.)?flickr\.com(?:...)?\/photos\/[^\/]+)\//;
+  var grps = re_flickr.exec(href);
+  if (grps.length) {
+    console.log('flickr');
+    authors.push(grps[1]);
+  }
+  return authors;
 };
 
 function endsWith(str, suffix) {
@@ -152,7 +190,7 @@ var getDescription = function(srcUrl) {
           console.log('Found title: ' + curAlt);
           alt = curAlt;
         } else {
-          var anchor = $(elem).closest("a");
+          var anchor = $(elem).closest("a[title]");
           alt = $(anchor).attr('title');
           console.log('Found <a title=: ' + alt);
         }
@@ -163,7 +201,7 @@ var getDescription = function(srcUrl) {
 };
 
 var createPage = function(msg) {
-  var alt = getDescription(msg['mediaUrl']);
+  var alt = getDescription(msg.mediaUrl);
   if (alt) {
     console.log('Found alt for image: ' + alt);
   }
@@ -181,12 +219,15 @@ var createPage = function(msg) {
   }
   var author = lic_author[1];
 
+  var authorUrls = getAuthorUrls();
+
   // Create the new page.
   port.postMessage({
     "cmd": "createPage",
     "mediaUrl": mediaUrl,
     "license": license,
     "author": author,
+    "authorUrls": authorUrls.join(','),
     "alt": alt,
     "date": lastModified
   });

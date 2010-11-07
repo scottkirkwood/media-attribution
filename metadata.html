@@ -27,7 +27,7 @@
   </head>
   <body>
   <fieldset>
-    <legend>Attribution Information:</legend>
+    <legend>Attribution Information</legend>
     <div class="notarow">
     <label for="page_url">Page URL:</label>
     <span id="page_url"></span>
@@ -78,6 +78,11 @@
     </div>
 
     <div class="notarow">
+    <label for="author_urls">Author URL(s):</label>
+    <input id="author_urls" onblur="onChange();" class="short-text" type="text" name="author_urls" size="40"/><br>
+    </div>
+
+    <div class="notarow">
     <label for="license">License(s):</label>
     <input id="license" onblur="onChange();" class="license-text" type="text" name="license"/><br>
     </div>
@@ -88,14 +93,12 @@
     </div>
   </fieldset>
 
-  <p class="info">
+  <p class="info"><b>Right</b> click on the two links below (in order) and then click "Save Link
+  As..." for each.  You should save both files to the same folder.</p>
 
-  <b>Right</b> click on the two links below (in order) and then click "Save Link As..." for each.
-  You should save both files in the same folder.</p>
-
-  <p>If you also have the python program watch.py monitoring the folder it will do the right thing
-    by renameing the files to what you typed in "<code>File name:</code>" above.
-    <a href="help.html">Tell me more...</a></p>
+  <p class="info">If you also have the python program watch.py monitoring the folder it will do the
+  right thing by renameing the files to what you typed in "<code>File name:</code>" above.
+  <a href="help.html">Tell me more...</a></p>
 
   <a id="save_media_as" class="savelinkas" href="#">Save Media Link As...</a>
 

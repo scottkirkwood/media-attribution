@@ -20,8 +20,6 @@
 
 var port = chrome.extension.connect({name: 'attrib'});
 
-console.log('metadata.js');
-
 var anchorHtml = function(url) {
   return '<a href="' + url + '">' + url + '</a>';
 };
@@ -55,6 +53,7 @@ var getAsJsonString = function() {
   console.log('getAsJsonString');
   var obj = {
     'author': getVal('#author'),
+    'authorUrls': getVal('#author_urls'),
     'date': getVal('#date'),
     'desc': getVal('#desc'),
     'fname': getVal('#fname'),
@@ -180,6 +179,7 @@ var onChange = function() {
   $('#save_meta_as').attr('href', saveAsUrl());
   cmd = {'cmd': 'saveLastInfo'};
   maybeSet(cmd, 'author', getVal('#author'));
+  maybeSet(cmd, 'authorUrls', getVal('#author_urls'));
   maybeSet(cmd, 'desc', getVal('#desc'));
   maybeSet(cmd, 'fname', getVal('#fname'));
   maybeSet(cmd, 'license', getVal('#license'));
@@ -234,6 +234,7 @@ var getLastInfo = function(msg) {
   }
   $('#license').val(msg.license);
   $('#author').val(msg.author);
+  $('#author_urls').val(msg.authorUrls);
   $('#date').text(msg.date);
   $('#save_media_as').attr('href', mediaUrl);
   $('#theimage').attr('src', mediaUrl);

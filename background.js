@@ -27,6 +27,7 @@ var maTabIdToMetaMap = {}
 var maKeys = [
   'alt',
   'author',
+  'authorUrls',
   'date',
   'desc',
   'fname',
@@ -39,7 +40,7 @@ var maKeys = [
 ];
 
 var createMetaPage = function(msg) {
-  var mediaUrl = msg['mediaUrl'];
+  var mediaUrl = msg.mediaUrl;
   saveLastInfo(msg);
   chrome.tabs.create({
       'url': chrome.extension.getURL('metadata.html')},
@@ -52,7 +53,7 @@ var createMetaPage = function(msg) {
 };
 
 var saveLastInfo = function(msg) {
-  var mediaUrl = msg['mediaUrl'];
+  var mediaUrl = msg.mediaUrl;
   if (!mediaUrl) {
     console.log('Cant find mediaUrl');
     return;
@@ -104,7 +105,7 @@ chrome.extension.onConnect.addListener(
           saveLastInfo(msg);
         } else if (msg.cmd == 'getLastInfo') {
           var tabId = port.sender.tab.id;
-          var mediaUrl = ('mediaUrl' in msg) ? msg['mediaUrl'] : maTabIdToMetaMap[tabId];
+          var mediaUrl = ('mediaUrl' in msg) ? msg.mediaUrl : maTabIdToMetaMap[tabId];
           if (mediaUrl) {
             console.log('Mediaurl: ' + mediaUrl);
           } else {
@@ -128,9 +129,9 @@ function onDownloadAttrib(onClickData, tab) {
   var mediaUrl = onClickData.srcUrl ? onClickData.srcUrl : onClickData.linkUrl;
   console.log('mediaUrl: ' + mediaUrl);
   maInfo[mediaUrl] = { };
-  maInfo[mediaUrl]['mediaType'] = onClickData.mediaType;
-  maInfo[mediaUrl]['mediaUrl'] = mediaUrl;
-  maInfo[mediaUrl]['pageUrl'] = onClickData.pageUrl ? onClickData.pageUrl : onClickData.frameUrl;
+  maInfo[mediaUrl].mediaType = onClickData.mediaType;
+  maInfo[mediaUrl].mediaUrl = mediaUrl;
+  maInfo[mediaUrl].pageUrl = onClickData.pageUrl ? onClickData.pageUrl : onClickData.frameUrl;
 
   chrome.tabs.executeScript(null, {code: [
     'var mediaUrl = "' + mediaUrl + '";'
