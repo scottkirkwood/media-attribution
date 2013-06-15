@@ -1,13 +1,20 @@
 {
   "name": "Media Attribution",
-  "version": "0.1",
+  "manifest_version": 2,
+  "version": "0.2",
   "description": "Download an image and make an info file for this file.",
   "permissions": [
     "tabs",
     "contextMenus",
     "http://*/*", "https://*/*"
   ],
-  "background_page": "background.html",
+  "background": {
+    "scripts": [
+      "jquery-2.0.2.min.js",
+      "background.js"
+    ],
+    "persistent": false
+  },
   "icons": {
     "16": "icon16x16.png",
     "l9": "iconl9xl9.png",

@@ -176,7 +176,7 @@ var addLicenseIcons = function(license) {
 };
 
 var onChange = function() {
-  $('#save_meta_as').attr('href', saveAsUrl());
+  $('#save_meta_as').attr('href', saveAsUrl()).attr('download', 'metadata.json');
   cmd = {'cmd': 'saveLastInfo'};
   maybeSet(cmd, 'author', getVal('#author'));
   maybeSet(cmd, 'authorUrls', getVal('#author_urls'));
@@ -288,7 +288,7 @@ var googlShorten = function(id_from, id_hide, id_to) {
       $('#' + id_hide).show();
       $('#' + id_to).html('<pre class="error">Failed: ' + textStatus + '</pre>');
     }
-  });
+  });  
 };
 
 $(document).ready(function() {

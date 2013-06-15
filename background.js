@@ -136,12 +136,17 @@ function onDownloadAttrib(onClickData, tab) {
   chrome.tabs.executeScript(null, {code: [
     'var mediaUrl = "' + mediaUrl + '";'
   ].join('\n')});
-  chrome.tabs.executeScript(null, {file: 'jquery-1.4.2.min.js'});
+  chrome.tabs.executeScript(null, {file: 'jquery-2.0.2.min.js'});
   chrome.tabs.executeScript(null, {file: 'media_attrib.js'});
 }
 
-chrome.contextMenus.create({
-  "title": "Media+Attribution...",
-  "contexts": ["link", "image", "video", "audio"],
-  "onclick": onDownloadAttrib
+chrome.contextMenus.onClicked.addListener(onDownloadAttrib);
+
+// Set up context menu tree at install time.
+chrome.runtime.onInstalled.addListener(function() {
+  chrome.contextMenus.create({
+    "id": "media_attribution_cm",
+    "title": "Media+Attribution...",
+    "contexts": ["link", "image", "video", "audio"],
+  });
 });

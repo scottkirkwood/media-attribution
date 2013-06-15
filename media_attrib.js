@@ -78,7 +78,7 @@ var getLicense = function() {
     console.log('link[rel=copyright]');
     maybeAddHref(licenses, $(elem).attr('href'));
   });
-  return license.join(', ');
+  return licenses.join(', ');
 };
 
 
@@ -150,7 +150,7 @@ var getAuthorUrls = function() {
   var href = location.href;
   var re_flickr = /(http:\/\/(?:www.)?flickr\.com(?:...)?\/photos\/[^\/]+)\//;
   var grps = re_flickr.exec(href);
-  if (grps.length) {
+  if (grps && grps.length) {
     console.log('flickr');
     authors.push(grps[1]);
   }
